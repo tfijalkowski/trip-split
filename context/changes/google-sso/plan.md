@@ -292,24 +292,24 @@ No database changes. No existing user accounts (greenfield). `signout.ts` is unc
 
 #### Automated
 
-- [x] 2.1 `npm run typecheck` passes (new routes)
+- [x] 2.1 `npm run typecheck` passes (new routes) — 166331e
 
 #### Manual
 
-- [x] 2.2 Clicking Google button redirects to accounts.google.com
-- [x] 2.3 Successful sign-in lands at `/dashboard`
-- [x] 2.4 Denied consent redirects to `/auth/signin` with error
-- [x] 2.5 Logged-out `/dashboard` visit → sign in → lands at `/dashboard`
+- [x] 2.2 Clicking Google button redirects to accounts.google.com — 166331e
+- [x] 2.3 Successful sign-in lands at `/dashboard` — 166331e
+- [x] 2.4 Denied consent redirects to `/auth/signin` with error — 166331e
+- [x] 2.5 Logged-out `/dashboard` visit → sign in → lands at `/dashboard` — 166331e
 
 ### Phase 3: UI Swap & Cleanup
 
 #### Automated
 
-- [ ] 3.1 `npm run typecheck` passes (no broken imports)
-- [ ] 3.2 `npm run lint` passes
+- [x] 3.1 `npm run typecheck` passes (no broken imports)
+- [x] 3.2 `npm run lint` passes
 
 #### Manual
 
-- [ ] 3.3 `/auth/signin` shows Google button only, no form, no signup link
-- [ ] 3.4 `/` shows one Sign In CTA
-- [ ] 3.5 `/auth/signup` returns 404
+- [x] 3.3 `/auth/signin` shows Google button only, no form, no signup link
+- [x] 3.4 `/` shows one Sign In CTA
+- [x] 3.5 `/auth/signup` returns 404
