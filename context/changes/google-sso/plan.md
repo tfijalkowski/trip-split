@@ -305,11 +305,11 @@ No database changes. No existing user accounts (greenfield). `signout.ts` is unc
 
 #### Automated
 
-- [x] 3.1 `npm run typecheck` passes (no broken imports)
-- [x] 3.2 `npm run lint` passes
+- [x] 3.1 `npm run typecheck` passes (no broken imports) — adf657a
+- [x] 3.2 `npm run lint` passes — adf657a
 
 #### Manual
 
-- [x] 3.3 `/auth/signin` shows Google button only, no form, no signup link
-- [x] 3.4 `/` shows one Sign In CTA
-- [x] 3.5 `/auth/signup` returns 404
+- [x] 3.3 `/auth/signin` shows Google button only, no form, no signup link — adf657a
+- [x] 3.4 `/` shows one Sign In CTA — adf657a
+- [x] 3.5 `/auth/signup` returns 404 — adf657a
