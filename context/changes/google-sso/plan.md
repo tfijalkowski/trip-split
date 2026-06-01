@@ -282,24 +282,24 @@ No database changes. No existing user accounts (greenfield). `signout.ts` is unc
 
 #### Automated
 
-- [x] 1.1 `supabase start` completes without errors
+- [x] 1.1 `supabase start` completes without errors — 80169a7
 
 #### Manual
 
-- [x] 1.2 Supabase Studio shows Google provider enabled
+- [x] 1.2 Supabase Studio shows Google provider enabled — 80169a7
 
 ### Phase 2: OAuth Routes
 
 #### Automated
 
-- [ ] 2.1 `npm run typecheck` passes (new routes)
+- [x] 2.1 `npm run typecheck` passes (new routes)
 
 #### Manual
 
-- [ ] 2.2 Clicking Google button redirects to accounts.google.com
-- [ ] 2.3 Successful sign-in lands at `/dashboard`
-- [ ] 2.4 Denied consent redirects to `/auth/signin` with error
-- [ ] 2.5 Logged-out `/dashboard` visit → sign in → lands at `/dashboard`
+- [x] 2.2 Clicking Google button redirects to accounts.google.com
+- [x] 2.3 Successful sign-in lands at `/dashboard`
+- [x] 2.4 Denied consent redirects to `/auth/signin` with error
+- [x] 2.5 Logged-out `/dashboard` visit → sign in → lands at `/dashboard`
 
 ### Phase 3: UI Swap & Cleanup
 
