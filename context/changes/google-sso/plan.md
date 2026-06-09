@@ -116,6 +116,15 @@ SUPABASE_AUTH_EXTERNAL_GOOGLE_SECRET=
 
 **Implementation Note**: After completing this phase and all automated verification passes, pause here for manual confirmation from the human that the manual testing was successful before proceeding to Phase 2.
 
+### Addendum (2026-06-02)
+
+During Phase 2 testing, two amendments to the Phase 1 contract were required and merged in commit 166331e:
+
+1. **`additional_redirect_urls`** — add a fourth entry `http://localhost:4321/auth/callback` alongside the `127.0.0.1` variant. Browsers (Chrome in particular) treat `localhost` and `127.0.0.1` as distinct origins for cookies/CORS; supporting both keeps dev frictionless regardless of which host the developer types.
+2. **`[auth.external.google].redirect_uri`** — set to `"http://127.0.0.1:54321/auth/v1/callback"` (Supabase's auth callback). Empty string relies on a derived default; pinning the value explicitly avoids ambiguity when running multiple Supabase projects locally.
+
+`.env.example` updated to reflect the new redirect URI in the Google Cloud Console registration steps.
+
 ---
 
 ## Phase 2: OAuth Routes
