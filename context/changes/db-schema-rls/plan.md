@@ -445,19 +445,19 @@ The S-02 migration (`member_balances` VIEW + `create_expense` RPC) will be a sep
 
 #### Automated
 
-- [ ] 1.1 `supabase db push` (or `db reset`) completes with exit code 0
-- [ ] 1.2 All 5 tables present in `pg_tables WHERE schemaname = 'public'`
-- [ ] 1.3 `expenses` and `expense_participants` in `pg_publication_tables` for `supabase_realtime`
-- [ ] 1.4 `on_auth_user_created` trigger exists in `information_schema.triggers`
-- [ ] 1.5 `is_group_member` function exists in `pg_proc`
+- [x] 1.1 `supabase db push` (or `db reset`) completes with exit code 0
+- [x] 1.2 All 5 tables present in `pg_tables WHERE schemaname = 'public'`
+- [x] 1.3 `expenses` and `expense_participants` in `pg_publication_tables` for `supabase_realtime`
+- [x] 1.4 `on_auth_user_created` trigger exists in `information_schema.triggers`
+- [x] 1.5 `is_group_member` function exists in `pg_proc`
 
 #### Manual (RLS verification)
 
-- [ ] 1.6 All 5 tables show "RLS Enabled" in Supabase Studio
-- [ ] 1.7 All policies present and named correctly per table
-- [ ] 1.8 Cross-group isolation: User A cannot SELECT from a group they don't belong to
-- [ ] 1.9 Lock enforcement: INSERT into expenses on a locked group fails with RLS violation
-- [ ] 1.10 Direct INSERT into expense_participants fails (no INSERT policy for authenticated)
+- [x] 1.6 All 5 tables show "RLS Enabled" in Supabase Studio
+- [x] 1.7 All policies present and named correctly per table
+- [x] 1.8 Cross-group isolation: User A cannot SELECT from a group they don't belong to
+- [x] 1.9 Lock enforcement: INSERT into expenses on a locked group fails with RLS violation
+- [x] 1.10 Direct INSERT into expense_participants fails (no INSERT policy for authenticated)
 
 ### Phase 2: Seed
 
