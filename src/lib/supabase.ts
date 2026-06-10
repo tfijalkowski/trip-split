@@ -1,6 +1,11 @@
-import { createServerClient, parseCookieHeader } from "@supabase/ssr";
+import { createServerClient, parseCookieHeader, createBrowserClient as createSSRBrowserClient } from "@supabase/ssr";
+import { PUBLIC_SUPABASE_URL, PUBLIC_SUPABASE_ANON_KEY } from "astro:env/client";
 import type { AstroCookies } from "astro";
 import { SUPABASE_URL, SUPABASE_KEY } from "astro:env/server";
+
+export function createBrowserClient() {
+  return createSSRBrowserClient(PUBLIC_SUPABASE_URL!, PUBLIC_SUPABASE_ANON_KEY!);
+}
 
 export function createClient(requestHeaders: Headers, cookies: AstroCookies) {
   if (!SUPABASE_URL || !SUPABASE_KEY) {

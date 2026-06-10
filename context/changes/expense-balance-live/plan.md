@@ -459,18 +459,18 @@ This creates the directory and a timestamped `.sql` file. Paste the VIEW + RPC S
 
 #### Automated
 
-- [ ] 1.1 `npm run build` completes without errors
-- [ ] 1.2 `npx tsc --noEmit` passes with zero errors
-- [ ] 1.3 `npm run lint` passes with no new errors
-- [ ] 1.4 `src/components/ui/table.tsx` and `src/components/ui/sheet.tsx` exist
+- [x] 1.1 `npm run build` completes without errors
+- [x] 1.2 `npx tsc --noEmit` passes with zero errors
+- [x] 1.3 `npm run lint` passes with no new errors
+- [x] 1.4 `src/components/ui/table.tsx` and `src/components/ui/sheet.tsx` exist
 
 #### Manual
 
-- [ ] 1.5 `package.json` lists `@tanstack/react-table`, `react-hook-form`, `zod` in `dependencies`
-- [ ] 1.6 `astro.config.mjs` has `PUBLIC_SUPABASE_URL` and `PUBLIC_SUPABASE_ANON_KEY` with `context: "client"`
-- [ ] 1.7 `.env.example` documents both public vars
-- [ ] 1.8 `src/lib/supabase.ts` exports `createBrowserClient()`
-- [ ] 1.9 `src/types.ts` exports `Expense`, `ExpenseParticipant`, `MemberBalance`, `ExpenseWithParticipants`, and updated `GroupMember` (with `display_name`, `email`)
+- [x] 1.5 `package.json` lists `@tanstack/react-table`, `react-hook-form`, `zod` in `dependencies`
+- [x] 1.6 `astro.config.mjs` has `PUBLIC_SUPABASE_URL` and `PUBLIC_SUPABASE_ANON_KEY` with `context: "client"`
+- [x] 1.7 `.env.example` documents both public vars
+- [x] 1.8 `src/lib/supabase.ts` exports `createBrowserClient()`
+- [x] 1.9 `src/types.ts` exports `Expense`, `ExpenseParticipant`, `MemberBalance`, `ExpenseWithParticipants`, and updated `GroupMember` (with `display_name`, `email`)
 
 ### Phase 2: Data Layer
 
