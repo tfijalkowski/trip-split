@@ -144,26 +144,20 @@ export function createBrowserClient() {
 }
 ```
 
-#### 6. Create src/types.ts
+#### 6. Update src/types.ts
 
-**File**: `src/types.ts` (new)
+**File**: `src/types.ts` (existing — ADD to, do NOT replace)
 
-**Intent**: Single source of truth for expense domain TypeScript interfaces. All components and API routes import from here.
+**Intent**: Add expense domain interfaces alongside the existing `Group` and `GroupMember` definitions. Merge the existing raw `GroupMember` (DB row shape) with the profile data needed by Phase 3 UI into a single canonical type so callers need only one import.
 
-**Contract**: Export five interfaces:
+**Contract**: Keep the existing `Group` interface unchanged. Replace the existing `GroupMember` with the canonical merged shape, then add four new expense interfaces:
+- `GroupMember`: `id` (uuid), `group_id` (uuid), `user_id` (uuid), `display_name` (string | null), `email` (string), `created_at` (ISO timestamp) — requires a JOIN of `group_members` with `profiles` when queried
 - `Expense`: `id` (uuid string), `group_id`, `description`, `amount` (integer grosze), `paid_by` (user_id uuid), `expense_date` (ISO date string or null), `created_at` (ISO timestamp)
 - `ExpenseParticipant`: `id`, `expense_id`, `user_id`, `amount_owed` (integer grosze)
 - `ExpenseWithParticipants`: `Expense & { expense_participants: ExpenseParticipant[] }`
 - `MemberBalance`: `user_id`, `group_id`, `total_owed`, `total_paid`, `net_balance` (all integer grosze)
-- `GroupMember`: `user_id`, `display_name` (string), `email` (string)
 
-#### 7. Extend PROTECTED_ROUTES in middleware.ts
-
-**File**: `src/middleware.ts:4`
-
-**Intent**: Redirect unauthenticated users away from all `/groups/*` pages. API routes at `/api/groups/*` are unaffected — they don't start with `/groups` and handle auth internally.
-
-**Contract**: Add `"/groups"` to the `PROTECTED_ROUTES` array: `const PROTECTED_ROUTES = ["/dashboard", "/groups"]`.
+**Note**: Any S-01 code that queries `group_members` and types the result as `GroupMember` now needs to JOIN `profiles` to satisfy the new shape. Check S-01 pages for raw `group_members` selects before implementing Phase 3.
 
 ### Success Criteria:
 
@@ -244,6 +238,10 @@ BEGIN
   RETURN v_expense_id;
 END;
 $$;
+REVOKE EXECUTE ON FUNCTION public.create_expense(uuid, text, integer, uuid, date, jsonb)
+  FROM anon, public;
+GRANT  EXECUTE ON FUNCTION public.create_expense(uuid, text, integer, uuid, date, jsonb)
+  TO authenticated;
 ```
 
 Apply to remote with `supabase db push`.
@@ -379,7 +377,7 @@ Build the Astro SSR page and the four React components. The Astro page handles t
 - On submit — grosze conversion and participant `amount_owed` computation:
   - `totalGrosze = Math.round(formValues.amount * 100)`
   - `equal`: `floorAmount = Math.floor(totalGrosze / n)`; participant[0] gets `floorAmount + (totalGrosze - floorAmount * n)`; others get `floorAmount`
-  - `percentage`: `amount_owed = Math.round(totalGrosze * participant.percentage / 100)`
+  - `percentage`: floor+remainder — `amount_owed[i] = Math.floor(totalGrosze * pct[i] / 100)` for all participants, then `amount_owed[0] += totalGrosze - sum(amount_owed)` to absorb rounding remainder. Using independent `Math.round()` per participant can produce totals ≠ `totalGrosze`, which the API route rejects as 400.
   - `custom`: `amount_owed = Math.round(participant.amount * 100)`
   - POST body: `{ description, amount_grosze: totalGrosze, paid_by, expense_date, participants: [{ user_id, amount_owed }] }` to `/api/groups/${groupId}/expenses`
 - On 201: `onSuccess()` then `onOpenChange(false)`
@@ -472,7 +470,7 @@ This creates the directory and a timestamped `.sql` file. Paste the VIEW + RPC S
 - [ ] 1.6 `astro.config.mjs` has `PUBLIC_SUPABASE_URL` and `PUBLIC_SUPABASE_ANON_KEY` with `context: "client"`
 - [ ] 1.7 `.env.example` documents both public vars
 - [ ] 1.8 `src/lib/supabase.ts` exports `createBrowserClient()`
-- [ ] 1.9 `src/types.ts` exports `Expense`, `ExpenseParticipant`, `MemberBalance`, `ExpenseWithParticipants`, `GroupMember`
+- [ ] 1.9 `src/types.ts` exports `Expense`, `ExpenseParticipant`, `MemberBalance`, `ExpenseWithParticipants`, and updated `GroupMember` (with `display_name`, `email`)
 
 ### Phase 2: Data Layer
 
@@ -492,7 +490,7 @@ This creates the directory and a timestamped `.sql` file. Paste the VIEW + RPC S
 - [ ] 2.9 `POST /api/groups/:id/expenses` with mismatched participant sum → `400`
 - [ ] 2.10 `member_balances` shows updated balances after RPC call
 
-### Phase 3: Group Detail Page & Islands
+### Phase 3: Group Detail Page & React Islands
 
 #### Automated
 
@@ -504,12 +502,13 @@ This creates the directory and a timestamped `.sql` file. Paste the VIEW + RPC S
 - [ ] 3.3 `/groups/<valid-id>` loads for authenticated member
 - [ ] 3.4 `/groups/<invalid-id>` or non-member access → redirect to `/dashboard`
 - [ ] 3.5 Unauthenticated access to `/groups/<id>` → redirect to `/auth/signin`
-- [ ] 3.6 Equal split expense submits, expense appears, balances update
-- [ ] 3.7 Percentage split with `sum ≠ 100%` → zod error, submit blocked
-- [ ] 3.8 Percentage split with `sum = 100%` → submits, balances update
-- [ ] 3.9 Custom amount split with `sum ≠ total` → zod error, submit blocked
-- [ ] 3.10 Custom amount split with `sum = total` → submits, balances update
-- [ ] 3.11 Payer filter filters correctly; "All payers" resets
-- [ ] 3.12 Column sorting and pagination controls work
-- [ ] 3.13 All amounts display as PLN (grosze ÷ 100, two decimal places)
-- [ ] 3.14 Two-session Realtime test: balance updates in session B within ~1 second after add in session A
+- [ ] 3.6 "Add expense" button opens the Sheet
+- [ ] 3.7 Equal split expense submits, expense appears, balances update
+- [ ] 3.8 Percentage split with `sum ≠ 100%` → zod error, submit blocked
+- [ ] 3.9 Percentage split with `sum = 100%` → submits, balances update
+- [ ] 3.10 Custom amount split with `sum ≠ total` → zod error, submit blocked
+- [ ] 3.11 Custom amount split with `sum = total` → submits, balances update
+- [ ] 3.12 Payer filter filters correctly; "All payers" resets
+- [ ] 3.13 Column sorting and pagination controls work
+- [ ] 3.14 All amounts display as PLN (grosze ÷ 100, two decimal places)
+- [ ] 3.15 Two-session Realtime test: balance updates in session B within ~1 second after add in session A
