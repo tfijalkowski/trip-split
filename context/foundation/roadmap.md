@@ -111,7 +111,7 @@ Fundacje poniżej zakładają, że wymienione elementy są obecne i NIE scaffold
 - **Unknowns:**
   - Gdzie żyje logika kalkulacji sald — po stronie bazy danych (SQL view lub function) czy w kodzie aplikacji? Obie opcje są wykonalne; SQL view jest prostsze do testowania, kod aplikacji łatwiejsze do debugowania. — Owner: TBD. Block: nie.
 - **Risk:** „Saldo na żywo" wymaga Supabase Realtime subscription na tabelach `expenses`/`expense_participants`. Jeśli Realtime nie jest poprawnie skonfigurowany w F-02 (publikacja tabel), subskrypcja nie zadziała i nie będzie żadnego błędu — tylko brak aktualizacji. Mitygacja: przetestuj subscription z dwóch osobnych sesji przeglądarki przed zamknięciem slice.
-- **Status:** proposed
+- **Status:** done
 
 ### S-03: Zamknięcie i otwarcie rozliczenia
 
@@ -145,8 +145,8 @@ Fundacje poniżej zakładają, że wymienione elementy są obecne i NIE scaffold
 | F-02       | db-schema-rls        | [F-02] Schema DB + polityki RLS + Realtime                      | —                     | ✅ Done                                         |
 | S-01       | group-join-flow      | [S-01] Tworzenie grupy, link zaproszenia, dołączenie            | —                     | ✅ Done — d548edc                               |
 | S-02       | expense-balance-live | [S-02] Dodawanie wydatku z podziałem + salda na żywo ⭐          | —                     | ✅ Done — 2f26ae0                                             |
-| S-03       | settlement-lock      | [S-03] Zamknięcie i otwarcie rozliczenia                        | nie                   | Czeka na S-02; must-have                       |
-| S-04       | expense-edit-delete  | [S-04] Edycja i usuwanie własnego wydatku                       | nie                   | Czeka na S-02; nice-to-have, równoległy z S-03 |
+| S-03       | settlement-lock      | [S-03] Zamknięcie i otwarcie rozliczenia                        | tak                   | Must-have; równoległy z S-04                   |
+| S-04       | expense-edit-delete  | [S-04] Edycja i usuwanie własnego wydatku                       | tak                   | Nice-to-have; równoległy z S-03                |
 
 ## Open Roadmap Questions
 
