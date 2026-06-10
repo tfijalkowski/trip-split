@@ -1,0 +1,1 @@
+SET LOCAL role authenticated; SET LOCAL "request.jwt.claims" TO '{"sub":"00000000-0000-0000-0000-000000000001","role":"authenticated"}'; SELECT join_group('TESTCODE'); 

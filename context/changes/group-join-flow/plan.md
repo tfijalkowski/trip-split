@@ -283,28 +283,28 @@ The new migration (`20260610000001_join_group_rpc.sql`) adds a function only —
 
 #### Automated
 
-- [x] 1.1 `supabase db push` or `db reset` completes with exit code 0
-- [x] 1.2 `join_group` exists in `pg_proc`
-- [x] 1.3 `join_group` is `SECURITY DEFINER` (`prosecdef = true`)
+- [x] 1.1 `supabase db push` or `db reset` completes with exit code 0 — 9da06bb
+- [x] 1.2 `join_group` exists in `pg_proc` — 9da06bb
+- [x] 1.3 `join_group` is `SECURITY DEFINER` (`prosecdef = true`) — 9da06bb
 
 #### Manual
 
-- [x] 1.4 `join_group` visible in Supabase Studio with SECURITY DEFINER label
-- [x] 1.5 `SELECT join_group('INVALID')` raises exception containing `invalid_invite_code`
-- [x] 1.6 `SELECT join_group('TESTCODE')` as Alice's JWT inserts membership and returns group UUID
+- [x] 1.4 `join_group` visible in Supabase Studio with SECURITY DEFINER label — 9da06bb
+- [x] 1.5 `SELECT join_group('INVALID')` raises exception containing `invalid_invite_code` — 9da06bb
+- [x] 1.6 `SELECT join_group('TESTCODE')` as Alice's JWT inserts membership and returns group UUID — 9da06bb
 
 ### Phase 2: Shared Types + Create Group API Route
 
 #### Automated
 
-- [ ] 2.1 `npx tsc --noEmit` passes
-- [ ] 2.2 `npx eslint src/types.ts src/pages/api/groups/index.ts` passes
+- [x] 2.1 `npx tsc --noEmit` passes
+- [x] 2.2 `npx eslint src/types.ts src/pages/api/groups/index.ts` passes
 
 #### Manual
 
-- [ ] 2.3 `POST /api/groups` with valid session + `{"name":"Test"}` → 201 `{"id":"..."}`
-- [ ] 2.4 `POST /api/groups` without session → 401
-- [ ] 2.5 `POST /api/groups` with `{"name":""}` → 400
+- [x] 2.3 `POST /api/groups` with valid session + `{"name":"Test"}` → 201 `{"id":"..."}`
+- [x] 2.4 `POST /api/groups` without session → 401
+- [x] 2.5 `POST /api/groups` with `{"name":""}` → 400
 
 ### Phase 3: Dashboard, Group Detail, and Join Pages
 

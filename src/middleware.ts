@@ -6,6 +6,8 @@ const PROTECTED_ROUTES = ["/dashboard"];
 export const onRequest = defineMiddleware(async (context, next) => {
   const supabase = createClient(context.request.headers, context.cookies);
 
+  context.locals.supabase = supabase;
+
   if (supabase) {
     const {
       data: { user },
