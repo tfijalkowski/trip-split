@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { createBrowserClient } from "@/lib/supabase.browser";
 import type { ExpenseWithParticipants, MemberBalance, GroupMember } from "@/types";
 import { Button } from "@/components/ui/button";
@@ -30,43 +30,39 @@ export default function GroupExpensesIsland({
   const [balances, setBalances] = useState(initialBalances);
   const [sheetOpen, setSheetOpen] = useState(false);
 
-  const refetch = async () => {
+  const refetch = useCallback(async () => {
     const client = getClient();
-    const [{ data: expenseRows, error: expErr }, { data: balanceRows, error: balErr }] =
-      await Promise.all([
-        client
-          .from("expenses")
-          .select("*, expense_participants(*)")
-          .eq("group_id", groupId)
-          .order("expense_date", { ascending: false }),
-        client.from("member_balances").select("*").eq("group_id", groupId),
-      ]);
-    if (expErr || balErr) console.error("[Realtime] refetch error:", expErr ?? balErr);
+    const [{ data: expenseRows }, { data: balanceRows }] = await Promise.all([
+      client
+        .from("expenses")
+        .select("*, expense_participants(*)")
+        .eq("group_id", groupId)
+        .order("expense_date", { ascending: false }),
+      client.from("member_balances").select("*").eq("group_id", groupId),
+    ]);
     if (expenseRows) setExpenses(expenseRows as ExpenseWithParticipants[]);
     if (balanceRows) setBalances(balanceRows as MemberBalance[]);
-  };
+  }, [groupId]);
 
   useEffect(() => {
+    let mounted = true;
     const client = getClient();
     const channel = client
       .channel(`expenses:${groupId}`)
       .on(
         "postgres_changes",
         { event: "*", schema: "public", table: "expenses", filter: `group_id=eq.${groupId}` },
-        (payload) => {
-          console.log("[Realtime] change received:", payload);
-          void refetch();
+        () => {
+          if (mounted) void refetch();
         },
       )
-      .subscribe((status, err) => {
-        if (err) console.error("[Realtime] error:", err);
-        else console.log("[Realtime] status:", status);
-      });
+      .subscribe();
 
     return () => {
+      mounted = false;
       void client.removeChannel(channel);
     };
-  }, [groupId]);
+  }, [groupId, refetch]);
 
   return (
     <div className="space-y-4">

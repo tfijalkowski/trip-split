@@ -1,7 +1,7 @@
 ---
 change_id: expense-balance-live
 roadmap_id: S-02
-status: implemented
+status: impl_reviewed
 created: 2026-06-08
 updated: 2026-06-10
 ---

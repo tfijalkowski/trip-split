@@ -39,7 +39,7 @@ if (membersError) {
   return Astro.redirect("/dashboard?error=load_failed");
 }
 
-const userIds = (memberRows ?? []).map((m: { user_id: string }) => m.user_id);
+const userIds = memberRows.map((m: { user_id: string }) => m.user_id);
 
 const { data: profileRows, error: profilesError } = userIds.length
   ? await supabase.from("profiles").select("id, display_name, email").in("id", userIds)
@@ -50,10 +50,10 @@ if (profilesError) {
 }
 
 const profileMap = new Map(
-  (profileRows ?? []).map((p: { id: string; display_name: string | null; email: string }) => [p.id, p]),
+  profileRows.map((p: { id: string; display_name: string | null; email: string }) => [p.id, p]),
 );
 
-const members: GroupMember[] = (memberRows ?? []).map(
+const members: GroupMember[] = memberRows.map(
   (m: { id: string; group_id: string; user_id: string; created_at: string }) => ({
     id: m.id,
     group_id: m.group_id,
@@ -64,16 +64,16 @@ const members: GroupMember[] = (memberRows ?? []).map(
   }),
 );
 
-const { data: expenseRows } = await supabase
-  .from("expenses")
-  .select("*, expense_participants(*)")
-  .eq("group_id", id)
-  .order("expense_date", { ascending: false });
+const [{ data: expenseRows }, { data: balanceRows }] = await Promise.all([
+  supabase
+    .from("expenses")
+    .select("*, expense_participants(*)")
+    .eq("group_id", id)
+    .order("expense_date", { ascending: false }),
+  supabase.from("member_balances").select("*").eq("group_id", id),
+]);
 
 const initialExpenses = (expenseRows ?? []) as ExpenseWithParticipants[];
-
-const { data: balanceRows } = await supabase.from("member_balances").select("*").eq("group_id", id);
-
 const initialBalances = (balanceRows ?? []) as MemberBalance[];
 
 const inviteUrl = `${Astro.url.origin}/join/${group.invite_code}`;
@@ -86,15 +86,13 @@ const inviteUrl = `${Astro.url.origin}/join/${group.invite_code}`;
         <a href="/dashboard" class="text-sm text-blue-200/70 hover:text-blue-200">← Dashboard</a>
       </div>
 
-      <h1
-        class="mb-2 bg-gradient-to-r from-blue-200 to-purple-200 bg-clip-text text-3xl font-bold text-transparent"
-      >
+      <h1 class="mb-2 bg-gradient-to-r from-blue-200 to-purple-200 bg-clip-text text-3xl font-bold text-transparent">
         {group.name}
       </h1>
       {group.description && <p class="mb-6 text-sm text-blue-100/60">{group.description}</p>}
 
       <div class="mb-6 rounded-xl border border-white/10 bg-white/10 p-5 backdrop-blur-xl">
-        <p class="mb-2 text-xs font-semibold uppercase tracking-wide text-white/50">Invite link</p>
+        <p class="mb-2 text-xs font-semibold tracking-wide text-white/50 uppercase">Invite link</p>
         <div class="flex items-center gap-3">
           <code class="flex-1 truncate rounded bg-black/20 px-3 py-2 text-sm text-blue-200">
             {inviteUrl}
@@ -104,7 +102,7 @@ const inviteUrl = `${Astro.url.origin}/join/${group.invite_code}`;
       </div>
 
       <div class="mb-6 rounded-xl border border-white/10 bg-white/10 p-5 backdrop-blur-xl">
-        <p class="mb-3 text-xs font-semibold uppercase tracking-wide text-white/50">Members</p>
+        <p class="mb-3 text-xs font-semibold tracking-wide text-white/50 uppercase">Members</p>
         <ul class="flex flex-col gap-2">
           {members.map((m) => <li class="text-sm text-white/80">{m.display_name ?? m.email}</li>)}
         </ul>

@@ -42,7 +42,7 @@ export function ExpenseTable({ expenses, members }: Props) {
       header: "Date",
       cell: (info) => {
         const val = info.getValue() ?? info.row.original.created_at;
-        return new Date(val).toLocaleDateString();
+        return val.slice(0, 10); // YYYY-MM-DD — locale-independent, safe for SSR hydration
       },
     }),
     columnHelper.accessor("paid_by", {

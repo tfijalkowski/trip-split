@@ -77,6 +77,13 @@ export const POST: APIRoute = async (context) => {
     });
   }
 
+  if (description.length > 255) {
+    return new Response(JSON.stringify({ error: "Description must be 255 characters or fewer" }), {
+      status: 400,
+      headers: { "Content-Type": "application/json" },
+    });
+  }
+
   if (typeof amount_grosze !== "number" || !Number.isInteger(amount_grosze) || amount_grosze <= 0) {
     return new Response(JSON.stringify({ error: "amount_grosze must be a positive integer" }), {
       status: 400,
@@ -92,6 +99,17 @@ export const POST: APIRoute = async (context) => {
   }
 
   const participants = rawParticipants as ExpenseParticipantBody[];
+
+  const invalidAmount = participants.find(
+    (p) => typeof p.amount_owed !== "number" || !Number.isInteger(p.amount_owed) || p.amount_owed < 0,
+  );
+  if (invalidAmount) {
+    return new Response(
+      JSON.stringify({ error: "Each participant amount_owed must be a non-negative integer (grosze)" }),
+      { status: 400, headers: { "Content-Type": "application/json" } },
+    );
+  }
+
   const participantSum = participants.reduce((sum, p) => {
     return sum + (typeof p.amount_owed === "number" ? p.amount_owed : 0);
   }, 0);
@@ -103,6 +121,25 @@ export const POST: APIRoute = async (context) => {
       }),
       { status: 400, headers: { "Content-Type": "application/json" } },
     );
+  }
+
+  const { data: allMembers } = await supabase.from("group_members").select("user_id").eq("group_id", groupId);
+
+  const memberUserIds = new Set((allMembers ?? []).map((m: { user_id: string }) => m.user_id));
+
+  if (!paid_by || !memberUserIds.has(paid_by)) {
+    return new Response(JSON.stringify({ error: "paid_by must be a group member" }), {
+      status: 400,
+      headers: { "Content-Type": "application/json" },
+    });
+  }
+
+  const invalidParticipant = participants.find((p) => typeof p.user_id !== "string" || !memberUserIds.has(p.user_id));
+  if (invalidParticipant) {
+    return new Response(JSON.stringify({ error: "All participants must be group members" }), {
+      status: 400,
+      headers: { "Content-Type": "application/json" },
+    });
   }
 
   const { data: expenseId, error: rpcError } = (await supabase.rpc("create_expense" as never, {
