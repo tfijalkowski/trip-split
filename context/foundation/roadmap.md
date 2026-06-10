@@ -29,8 +29,8 @@ Manualne rozliczanie wydatków po wyjeździe wakacyjnym to Excel + WhatsApp — 
 
 | ID   | Change ID            | Outcome (użytkownik może …)                                        | Prerequisites | PRD refs                                              | Status   |
 |------|----------------------|--------------------------------------------------------------------|---------------|-------------------------------------------------------|----------|
-| F-01 | google-sso           | (fundacja) Google OAuth działa; sesje oparte na cookie             | —             | FR-001, FR-002, Access Control                        | ready    |
-| F-02 | db-schema-rls        | (fundacja) Schema + RLS wylądowały; Realtime włączony              | —             | FR-003, FR-004, FR-005, FR-006, FR-007, FR-008, FR-009, FR-010, FR-015, FR-016, Business Logic, NFR | ready |
+| F-01 | google-sso           | (fundacja) Google OAuth działa; sesje oparte na cookie             | —             | FR-001, FR-002, Access Control                        | done     |
+| F-02 | db-schema-rls        | (fundacja) Schema + RLS wylądowały; Realtime włączony              | —             | FR-003, FR-004, FR-005, FR-006, FR-007, FR-008, FR-009, FR-010, FR-015, FR-016, Business Logic, NFR | done  |
 | S-01 | group-join-flow      | stworzyć grupę, skopiować link zaproszenia i dołączyć przez link   | F-01, F-02    | FR-003, FR-004, FR-005                                | done     |
 | S-02 | expense-balance-live | dodać wydatek z podziałem i widzieć salda na żywo                  | S-01          | US-01, FR-006, FR-007, FR-008, FR-009, FR-010         | proposed |
 | S-03 | settlement-lock      | zamknąć i otworzyć rozliczenie (twórca grupy)                      | S-02          | FR-015, FR-016                                        | proposed |
@@ -71,7 +71,7 @@ Fundacje poniżej zakładają, że wymienione elementy są obecne i NIE scaffold
 - **Blockers:** —
 - **Unknowns:** —
 - **Risk:** Klient Supabase i middleware są już na miejscu, ale używają `signInWithPassword`. Zmiana metody logowania wymaga dodania trasy callback (`/auth/callback`) i skonfigurowania zmiennych `GOOGLE_CLIENT_ID`/`GOOGLE_CLIENT_SECRET`. Bezpieczne podejście: wdróż OAuth atomicznie — nie zostawiaj obu metod jednocześnie aktywnych.
-- **Status:** ready
+- **Status:** done
 
 ### F-02: Schemat bazy danych + RLS + Realtime
 
@@ -84,7 +84,7 @@ Fundacje poniżej zakładają, że wymienione elementy są obecne i NIE scaffold
 - **Blockers:** —
 - **Unknowns:** —
 - **Risk:** RLS jest kluczowy dla guardrail bezpieczeństwa PRD: „uczestnik spoza grupy nie widzi żadnych danych finansowych innej grupy." Błąd w politykach może ujawnić dane innej grupy. Mitygacja: każdą politykę przetestuj jako osobny użytkownik bazy (nie superuser) przed merge'em migracji.
-- **Status:** ready
+- **Status:** done
 
 ## Slices
 
