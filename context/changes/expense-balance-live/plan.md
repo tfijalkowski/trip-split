@@ -476,39 +476,39 @@ This creates the directory and a timestamped `.sql` file. Paste the VIEW + RPC S
 
 #### Automated
 
-- [x] 2.1 `supabase db push` applies migration with no errors
-- [x] 2.2 `SELECT * FROM member_balances` returns rows after test data inserted
-- [x] 2.3 `npm run build` still passes
-- [x] 2.4 `npx tsc --noEmit` still passes
+- [x] 2.1 `supabase db push` applies migration with no errors — 65f1301
+- [x] 2.2 `SELECT * FROM member_balances` returns rows after test data inserted — 65f1301
+- [x] 2.3 `npm run build` still passes — 65f1301
+- [x] 2.4 `npx tsc --noEmit` still passes — 65f1301
 
 #### Manual
 
-- [x] 2.5 `create_expense` RPC inserts atomically — verified via Supabase SQL editor
-- [x] 2.6 `POST /api/groups/:id/expenses` with valid auth + body → `201`
-- [x] 2.7 `POST /api/groups/:id/expenses` without auth → `401`
-- [x] 2.8 `POST /api/groups/:id/expenses` by non-member → `403`
-- [x] 2.9 `POST /api/groups/:id/expenses` with mismatched participant sum → `400`
-- [x] 2.10 `member_balances` shows updated balances after RPC call
+- [x] 2.5 `create_expense` RPC inserts atomically — verified via Supabase SQL editor — 65f1301
+- [x] 2.6 `POST /api/groups/:id/expenses` with valid auth + body → `201` — 65f1301
+- [x] 2.7 `POST /api/groups/:id/expenses` without auth → `401` — 65f1301
+- [x] 2.8 `POST /api/groups/:id/expenses` by non-member → `403` — 65f1301
+- [x] 2.9 `POST /api/groups/:id/expenses` with mismatched participant sum → `400` — 65f1301
+- [x] 2.10 `member_balances` shows updated balances after RPC call — 65f1301
 
 ### Phase 3: Group Detail Page & React Islands
 
 #### Automated
 
-- [ ] 3.1 `npm run build` passes with zero TypeScript errors
-- [ ] 3.2 `npm run lint` passes with no errors
+- [x] 3.1 `npm run build` passes with zero TypeScript errors
+- [x] 3.2 `npm run lint` passes with no errors
 
 #### Manual
 
-- [ ] 3.3 `/groups/<valid-id>` loads for authenticated member
-- [ ] 3.4 `/groups/<invalid-id>` or non-member access → redirect to `/dashboard`
-- [ ] 3.5 Unauthenticated access to `/groups/<id>` → redirect to `/auth/signin`
-- [ ] 3.6 "Add expense" button opens the Sheet
-- [ ] 3.7 Equal split expense submits, expense appears, balances update
-- [ ] 3.8 Percentage split with `sum ≠ 100%` → zod error, submit blocked
-- [ ] 3.9 Percentage split with `sum = 100%` → submits, balances update
-- [ ] 3.10 Custom amount split with `sum ≠ total` → zod error, submit blocked
-- [ ] 3.11 Custom amount split with `sum = total` → submits, balances update
-- [ ] 3.12 Payer filter filters correctly; "All payers" resets
-- [ ] 3.13 Column sorting and pagination controls work
-- [ ] 3.14 All amounts display as PLN (grosze ÷ 100, two decimal places)
-- [ ] 3.15 Two-session Realtime test: balance updates in session B within ~1 second after add in session A
+- [x] 3.3 `/groups/<valid-id>` loads for authenticated member
+- [x] 3.4 `/groups/<invalid-id>` or non-member access → redirect to `/dashboard`
+- [x] 3.5 Unauthenticated access to `/groups/<id>` → redirect to `/auth/signin`
+- [x] 3.6 "Add expense" button opens the Sheet
+- [x] 3.7 Equal split expense submits, expense appears, balances update
+- [x] 3.8 Percentage split with `sum ≠ 100%` → zod error, submit blocked
+- [x] 3.9 Percentage split with `sum = 100%` → submits, balances update
+- [x] 3.10 Custom amount split with `sum ≠ total` → zod error, submit blocked
+- [x] 3.11 Custom amount split with `sum = total` → submits, balances update
+- [x] 3.12 Payer filter filters correctly; "All payers" resets
+- [x] 3.13 Column sorting and pagination controls work
+- [x] 3.14 All amounts display as PLN (grosze ÷ 100, two decimal places)
+- [x] 3.15 Two-session Realtime test: balance updates in session B within ~1 second after add in session A

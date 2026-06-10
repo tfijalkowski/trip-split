@@ -3,12 +3,13 @@ export const prerender = false;
 
 import Layout from "@/layouts/Layout.astro";
 import CopyButton from "@/components/groups/CopyButton";
-import type { Group } from "@/types";
+import GroupExpensesIsland from "@/components/expenses/GroupExpensesIsland";
+import type { Group, GroupMember, ExpenseWithParticipants, MemberBalance } from "@/types";
 
-const { supabase } = Astro.locals;
+const { supabase, user } = Astro.locals;
 const { id } = Astro.params;
 
-if (!supabase || !id) {
+if (!supabase || !id || !user) {
   return Astro.redirect("/dashboard");
 }
 
@@ -18,13 +19,24 @@ if (!group) {
   return Astro.redirect("/dashboard");
 }
 
+const { data: membership } = await supabase
+  .from("group_members")
+  .select("id")
+  .eq("group_id", id)
+  .eq("user_id", user.id)
+  .maybeSingle();
+
+if (!membership) {
+  return Astro.redirect("/dashboard");
+}
+
 const { data: memberRows, error: membersError } = await supabase
   .from("group_members")
-  .select("user_id")
+  .select("id, group_id, user_id, created_at")
   .eq("group_id", id);
 
 if (membersError) {
-  return Astro.redirect("/dashboard?error=join_failed");
+  return Astro.redirect("/dashboard?error=load_failed");
 }
 
 const userIds = (memberRows ?? []).map((m: { user_id: string }) => m.user_id);
@@ -34,15 +46,35 @@ const { data: profileRows, error: profilesError } = userIds.length
   : { data: [] as { id: string; display_name: string | null; email: string }[], error: null };
 
 if (profilesError) {
-  return Astro.redirect("/dashboard?error=join_failed");
+  return Astro.redirect("/dashboard?error=load_failed");
 }
 
-const profileMap = new Map((profileRows ?? []).map((p: { id: string; display_name: string | null; email: string }) => [p.id, p]));
+const profileMap = new Map(
+  (profileRows ?? []).map((p: { id: string; display_name: string | null; email: string }) => [p.id, p]),
+);
 
-const members = (memberRows ?? []).map((m: { user_id: string }) => ({
-  user_id: m.user_id,
-  label: profileMap.get(m.user_id)?.display_name ?? profileMap.get(m.user_id)?.email ?? m.user_id,
-}));
+const members: GroupMember[] = (memberRows ?? []).map(
+  (m: { id: string; group_id: string; user_id: string; created_at: string }) => ({
+    id: m.id,
+    group_id: m.group_id,
+    user_id: m.user_id,
+    created_at: m.created_at,
+    display_name: profileMap.get(m.user_id)?.display_name ?? null,
+    email: profileMap.get(m.user_id)?.email ?? m.user_id,
+  }),
+);
+
+const { data: expenseRows } = await supabase
+  .from("expenses")
+  .select("*, expense_participants(*)")
+  .eq("group_id", id)
+  .order("expense_date", { ascending: false });
+
+const initialExpenses = (expenseRows ?? []) as ExpenseWithParticipants[];
+
+const { data: balanceRows } = await supabase.from("member_balances").select("*").eq("group_id", id);
+
+const initialBalances = (balanceRows ?? []) as MemberBalance[];
 
 const inviteUrl = `${Astro.url.origin}/join/${group.invite_code}`;
 ---
@@ -54,7 +86,9 @@ const inviteUrl = `${Astro.url.origin}/join/${group.invite_code}`;
         <a href="/dashboard" class="text-sm text-blue-200/70 hover:text-blue-200">← Dashboard</a>
       </div>
 
-      <h1 class="mb-2 bg-gradient-to-r from-blue-200 to-purple-200 bg-clip-text text-3xl font-bold text-transparent">
+      <h1
+        class="mb-2 bg-gradient-to-r from-blue-200 to-purple-200 bg-clip-text text-3xl font-bold text-transparent"
+      >
         {group.name}
       </h1>
       {group.description && <p class="mb-6 text-sm text-blue-100/60">{group.description}</p>}
@@ -72,13 +106,18 @@ const inviteUrl = `${Astro.url.origin}/join/${group.invite_code}`;
       <div class="mb-6 rounded-xl border border-white/10 bg-white/10 p-5 backdrop-blur-xl">
         <p class="mb-3 text-xs font-semibold uppercase tracking-wide text-white/50">Members</p>
         <ul class="flex flex-col gap-2">
-          {members.map((m) => <li class="text-sm text-white/80">{m.label}</li>)}
+          {members.map((m) => <li class="text-sm text-white/80">{m.display_name ?? m.email}</li>)}
         </ul>
       </div>
 
-      <section class="rounded-xl border border-white/10 bg-white/10 p-5 backdrop-blur-xl">
-        <p class="text-sm text-white/40">Expenses will appear here (S-02)</p>
-      </section>
+      <GroupExpensesIsland
+        groupId={id}
+        initialExpenses={initialExpenses}
+        initialBalances={initialBalances}
+        members={members}
+        currentUserId={user.id}
+        client:load
+      />
     </div>
   </div>
 </Layout>
