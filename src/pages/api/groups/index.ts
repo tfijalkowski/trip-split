@@ -43,22 +43,13 @@ export const POST: APIRoute = async (context) => {
     });
   }
 
-  const groupId = crypto.randomUUID();
-  const { error: groupError } = await supabase
-    .from("groups")
-    .insert({ id: groupId, name, description, created_by: user.id });
+  const { data: groupId, error: createError } = (await supabase.rpc("create_group" as never, {
+    p_name: name,
+    p_description: description,
+  })) as { data: string | null; error: import("@supabase/supabase-js").PostgrestError | null };
 
-  if (groupError) {
-    return new Response(JSON.stringify({ error: groupError.message }), {
-      status: 500,
-      headers: { "Content-Type": "application/json" },
-    });
-  }
-
-  const { error: memberError } = await supabase.from("group_members").insert({ group_id: groupId, user_id: user.id });
-
-  if (memberError) {
-    return new Response(JSON.stringify({ error: "Failed to add you as a member" }), {
+  if (createError || !groupId) {
+    return new Response(JSON.stringify({ error: createError?.message ?? "Failed to create group" }), {
       status: 500,
       headers: { "Content-Type": "application/json" },
     });

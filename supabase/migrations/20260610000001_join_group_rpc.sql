@@ -18,3 +18,5 @@ BEGIN
   RETURN v_group_id;
 END;
 $$;
+REVOKE EXECUTE ON FUNCTION public.join_group(text) FROM anon, public;
+GRANT EXECUTE ON FUNCTION public.join_group(text) TO authenticated;

@@ -4,7 +4,7 @@ export const prerender = false;
 const { supabase, user } = Astro.locals;
 const { invite_code } = Astro.params;
 
-if (!invite_code) {
+if (!invite_code || !/^[A-F0-9]{8}$/.test(invite_code)) {
   return Astro.redirect("/dashboard?error=invalid_invite");
 }
 
@@ -22,6 +22,10 @@ if (error) {
   if (error.message.includes("invalid_invite_code")) {
     return Astro.redirect("/dashboard?error=invalid_invite");
   }
+  return Astro.redirect("/dashboard?error=join_failed");
+}
+
+if (!data) {
   return Astro.redirect("/dashboard?error=join_failed");
 }
 

@@ -14,13 +14,3 @@ export interface GroupMember {
   user_id: string;
   created_at: string;
 }
-
-export interface GroupWithMembers extends Group {
-  members: {
-    user_id: string;
-    profiles: {
-      display_name: string | null;
-      email: string;
-    } | null;
-  }[];
-}
