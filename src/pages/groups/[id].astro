@@ -1,0 +1,77 @@
+---
+export const prerender = false;
+
+import Layout from "@/layouts/Layout.astro";
+import type { Group } from "@/types";
+
+const { supabase } = Astro.locals;
+const { id } = Astro.params;
+
+if (!supabase || !id) {
+  return Astro.redirect("/dashboard");
+}
+
+const { data: group } = await supabase.from("groups").select("*").eq("id", id).single<Group>();
+
+if (!group) {
+  return Astro.redirect("/dashboard");
+}
+
+const { data: memberRows } = await supabase.from("group_members").select("user_id").eq("group_id", id);
+
+const userIds = (memberRows ?? []).map((m: { user_id: string }) => m.user_id);
+
+const { data: profileRows } = userIds.length
+  ? await supabase.from("profiles").select("id, display_name, email").in("id", userIds)
+  : { data: [] as { id: string; display_name: string | null; email: string }[] };
+
+const profileMap = new Map((profileRows ?? []).map((p: { id: string; display_name: string | null; email: string }) => [p.id, p]));
+
+const members = (memberRows ?? []).map((m: { user_id: string }) => ({
+  user_id: m.user_id,
+  label: profileMap.get(m.user_id)?.display_name ?? profileMap.get(m.user_id)?.email ?? m.user_id,
+}));
+
+const inviteUrl = `${Astro.url.origin}/join/${group.invite_code}`;
+---
+
+<Layout title={group.name}>
+  <div class="bg-cosmic flex min-h-screen flex-col items-center p-8">
+    <div class="w-full max-w-2xl">
+      <div class="mb-8">
+        <a href="/dashboard" class="text-sm text-blue-200/70 hover:text-blue-200">← Dashboard</a>
+      </div>
+
+      <h1 class="mb-2 bg-gradient-to-r from-blue-200 to-purple-200 bg-clip-text text-3xl font-bold text-transparent">
+        {group.name}
+      </h1>
+      {group.description && <p class="mb-6 text-sm text-blue-100/60">{group.description}</p>}
+
+      <div class="mb-6 rounded-xl border border-white/10 bg-white/10 p-5 backdrop-blur-xl">
+        <p class="mb-2 text-xs font-semibold uppercase tracking-wide text-white/50">Invite link</p>
+        <div class="flex items-center gap-3">
+          <code class="flex-1 truncate rounded bg-black/20 px-3 py-2 text-sm text-blue-200">
+            {inviteUrl}
+          </code>
+          <button
+            onclick={`navigator.clipboard.writeText(${JSON.stringify(inviteUrl)}).then(function(){var b=this;b.textContent='Copied!';setTimeout(function(){b.textContent='Copy'},1500)}.bind(this))`}
+            class="shrink-0 rounded-lg border border-white/20 bg-white/10 px-3 py-2 text-sm text-white transition-colors hover:bg-white/20"
+          >
+            Copy
+          </button>
+        </div>
+      </div>
+
+      <div class="mb-6 rounded-xl border border-white/10 bg-white/10 p-5 backdrop-blur-xl">
+        <p class="mb-3 text-xs font-semibold uppercase tracking-wide text-white/50">Members</p>
+        <ul class="flex flex-col gap-2">
+          {members.map((m) => <li class="text-sm text-white/80">{m.label}</li>)}
+        </ul>
+      </div>
+
+      <section class="rounded-xl border border-white/10 bg-white/10 p-5 backdrop-blur-xl">
+        <p class="text-sm text-white/40">Expenses will appear here (S-02)</p>
+      </section>
+    </div>
+  </div>
+</Layout>

@@ -297,23 +297,23 @@ The new migration (`20260610000001_join_group_rpc.sql`) adds a function only —
 
 #### Automated
 
-- [x] 2.1 `npx tsc --noEmit` passes
-- [x] 2.2 `npx eslint src/types.ts src/pages/api/groups/index.ts` passes
+- [x] 2.1 `npx tsc --noEmit` passes — d9b29ce
+- [x] 2.2 `npx eslint src/types.ts src/pages/api/groups/index.ts` passes — d9b29ce
 
 #### Manual
 
-- [x] 2.3 `POST /api/groups` with valid session + `{"name":"Test"}` → 201 `{"id":"..."}`
-- [x] 2.4 `POST /api/groups` without session → 401
-- [x] 2.5 `POST /api/groups` with `{"name":""}` → 400
+- [x] 2.3 `POST /api/groups` with valid session + `{"name":"Test"}` → 201 `{"id":"..."}` — d9b29ce
+- [x] 2.4 `POST /api/groups` without session → 401 — d9b29ce
+- [x] 2.5 `POST /api/groups` with `{"name":""}` → 400 — d9b29ce
 
 ### Phase 3: Dashboard, Group Detail, and Join Pages
 
 #### Manual
 
-- [ ] 3.1 Creator flow: create group → land on `/groups/[id]` with invite URL and member list
-- [ ] 3.2 Invite flow (new user, incognito): open invite URL → sign in → land on `/groups/[id]` as new member
-- [ ] 3.3 Invite flow (existing user): open invite URL while logged in → immediately land on `/groups/[id]`
-- [ ] 3.4 Already-a-member: open invite URL twice → no error, no duplicate row
-- [ ] 3.5 Invalid code: `/join/BADCODE` → `/dashboard` with error banner
-- [ ] 3.6 Protected route: `/groups/[id]` unauthenticated → `/auth/signin`
-- [ ] 3.7 Cross-group isolation: non-member navigates to group URL → redirected to dashboard
+- [x] 3.1 Creator flow: create group → land on `/groups/[id]` with invite URL and member list
+- [x] 3.2 Invite flow (new user, incognito): open invite URL → sign in → land on `/groups/[id]` as new member
+- [x] 3.3 Invite flow (existing user): open invite URL while logged in → immediately land on `/groups/[id]`
+- [x] 3.4 Already-a-member: open invite URL twice → no error, no duplicate row
+- [x] 3.5 Invalid code: `/join/BADCODE` → `/dashboard` with error banner
+- [x] 3.6 Protected route: `/groups/[id]` unauthenticated → `/auth/signin`
+- [x] 3.7 Cross-group isolation: non-member navigates to group URL → redirected to dashboard

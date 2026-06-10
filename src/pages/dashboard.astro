@@ -1,27 +1,70 @@
 ---
 import Layout from "@/layouts/Layout.astro";
+import CreateGroupForm from "@/components/groups/CreateGroupForm";
 
-const { user } = Astro.locals;
+const { supabase } = Astro.locals;
+
+const { data: groups } = supabase
+  ? await supabase.from("groups").select("id, name, created_at").order("created_at", { ascending: false })
+  : { data: [] as { id: string; name: string; created_at: string }[] };
+
+const error = Astro.url.searchParams.get("error");
+const errorMessages: Record<string, string> = {
+  invalid_invite: "That invite link is invalid or has expired.",
+  join_failed: "Something went wrong joining the group. Please try again.",
+};
 ---
 
 <Layout title="Dashboard">
-  <div class="bg-cosmic flex min-h-screen items-center justify-center p-4">
-    <div class="rounded-2xl border border-white/10 bg-white/10 p-8 text-center text-white backdrop-blur-xl">
-      <h1 class="mb-4 bg-gradient-to-r from-blue-200 to-purple-200 bg-clip-text text-3xl font-bold text-transparent">
-        Dashboard
-      </h1>
-      <p class="text-blue-100/80">
-        Welcome, <span class="font-semibold text-white">{user?.email}</span>
-      </p>
-      <p class="mt-2 text-sm text-blue-100/50">This page is only for authenticated users.</p>
-      <form method="POST" action="/api/auth/signout" class="mt-6">
-        <button
-          type="submit"
-          class="rounded-lg border border-white/20 bg-white/10 px-4 py-2 text-sm transition-colors hover:bg-white/20"
-        >
-          Sign out
-        </button>
-      </form>
+  <div class="bg-cosmic flex min-h-screen flex-col items-center p-8">
+    <div class="w-full max-w-2xl">
+      <div class="mb-8 flex items-center justify-between">
+        <h1 class="bg-gradient-to-r from-blue-200 to-purple-200 bg-clip-text text-3xl font-bold text-transparent">
+          My groups
+        </h1>
+        <form method="POST" action="/api/auth/signout">
+          <button
+            type="submit"
+            class="rounded-lg border border-white/20 bg-white/10 px-4 py-2 text-sm text-white transition-colors hover:bg-white/20"
+          >
+            Sign out
+          </button>
+        </form>
+      </div>
+
+      {
+        error && errorMessages[error] && (
+          <div class="mb-6 rounded-lg border border-red-400/30 bg-red-400/10 px-4 py-3 text-sm text-red-300">
+            {errorMessages[error]}
+          </div>
+        )
+      }
+
+      <div class="mb-6">
+        <CreateGroupForm client:load />
+      </div>
+
+      {
+        groups && groups.length > 0 ? (
+          <ul class="flex flex-col gap-3">
+            {groups.map((g) => (
+              <li>
+                <a
+                  href={`/groups/${g.id}`}
+                  class="block rounded-xl border border-white/10 bg-white/10 px-5 py-4 text-white backdrop-blur-xl transition-colors hover:bg-white/20"
+                >
+                  <span class="font-semibold">{g.name}</span>
+                  <span class="ml-3 text-xs text-white/50">
+                    {new Date(g.created_at).toLocaleDateString()}
+                  </span>
+                </a>
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <p class="text-sm text-blue-100/50">No groups yet. Create one above.</p>
+        )
+      }
     </div>
   </div>
 </Layout>

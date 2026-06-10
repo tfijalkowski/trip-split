@@ -1,0 +1,29 @@
+---
+export const prerender = false;
+
+const { supabase, user } = Astro.locals;
+const { invite_code } = Astro.params;
+
+if (!invite_code) {
+  return Astro.redirect("/dashboard?error=invalid_invite");
+}
+
+if (!user) {
+  return Astro.redirect(`/api/auth/google?redirect_to=${encodeURIComponent(`/join/${invite_code}`)}`);
+}
+
+if (!supabase) {
+  return Astro.redirect("/dashboard?error=join_failed");
+}
+
+const { data, error } = await supabase.rpc("join_group", { p_invite_code: invite_code });
+
+if (error) {
+  if (error.message.includes("invalid_invite_code")) {
+    return Astro.redirect("/dashboard?error=invalid_invite");
+  }
+  return Astro.redirect("/dashboard?error=join_failed");
+}
+
+return Astro.redirect(`/groups/${data as string}`);
+---
