@@ -494,21 +494,21 @@ This creates the directory and a timestamped `.sql` file. Paste the VIEW + RPC S
 
 #### Automated
 
-- [x] 3.1 `npm run build` passes with zero TypeScript errors
-- [x] 3.2 `npm run lint` passes with no errors
+- [x] 3.1 `npm run build` passes with zero TypeScript errors — 2f26ae0
+- [x] 3.2 `npm run lint` passes with no errors — 2f26ae0
 
 #### Manual
 
-- [x] 3.3 `/groups/<valid-id>` loads for authenticated member
-- [x] 3.4 `/groups/<invalid-id>` or non-member access → redirect to `/dashboard`
-- [x] 3.5 Unauthenticated access to `/groups/<id>` → redirect to `/auth/signin`
-- [x] 3.6 "Add expense" button opens the Sheet
-- [x] 3.7 Equal split expense submits, expense appears, balances update
-- [x] 3.8 Percentage split with `sum ≠ 100%` → zod error, submit blocked
-- [x] 3.9 Percentage split with `sum = 100%` → submits, balances update
-- [x] 3.10 Custom amount split with `sum ≠ total` → zod error, submit blocked
-- [x] 3.11 Custom amount split with `sum = total` → submits, balances update
-- [x] 3.12 Payer filter filters correctly; "All payers" resets
-- [x] 3.13 Column sorting and pagination controls work
-- [x] 3.14 All amounts display as PLN (grosze ÷ 100, two decimal places)
-- [x] 3.15 Two-session Realtime test: balance updates in session B within ~1 second after add in session A
+- [x] 3.3 `/groups/<valid-id>` loads for authenticated member — 2f26ae0
+- [x] 3.4 `/groups/<invalid-id>` or non-member access → redirect to `/dashboard` — 2f26ae0
+- [x] 3.5 Unauthenticated access to `/groups/<id>` → redirect to `/auth/signin` — 2f26ae0
+- [x] 3.6 "Add expense" button opens the Sheet — 2f26ae0
+- [x] 3.7 Equal split expense submits, expense appears, balances update — 2f26ae0
+- [x] 3.8 Percentage split with `sum ≠ 100%` → zod error, submit blocked — 2f26ae0
+- [x] 3.9 Percentage split with `sum = 100%` → submits, balances update — 2f26ae0
+- [x] 3.10 Custom amount split with `sum ≠ total` → zod error, submit blocked — 2f26ae0
+- [x] 3.11 Custom amount split with `sum = total` → submits, balances update — 2f26ae0
+- [x] 3.12 Payer filter filters correctly; "All payers" resets — 2f26ae0
+- [x] 3.13 Column sorting and pagination controls work — 2f26ae0
+- [x] 3.14 All amounts display as PLN (grosze ÷ 100, two decimal places) — 2f26ae0
+- [x] 3.15 Two-session Realtime test: balance updates in session B within ~1 second after add in session A — 2f26ae0
