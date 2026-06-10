@@ -283,15 +283,15 @@ The new migration (`20260610000001_join_group_rpc.sql`) adds a function only —
 
 #### Automated
 
-- [ ] 1.1 `supabase db push` or `db reset` completes with exit code 0
-- [ ] 1.2 `join_group` exists in `pg_proc`
-- [ ] 1.3 `join_group` is `SECURITY DEFINER` (`prosecdef = true`)
+- [x] 1.1 `supabase db push` or `db reset` completes with exit code 0
+- [x] 1.2 `join_group` exists in `pg_proc`
+- [x] 1.3 `join_group` is `SECURITY DEFINER` (`prosecdef = true`)
 
 #### Manual
 
-- [ ] 1.4 `join_group` visible in Supabase Studio with SECURITY DEFINER label
-- [ ] 1.5 `SELECT join_group('INVALID')` raises exception containing `invalid_invite_code`
-- [ ] 1.6 `SELECT join_group('TESTCODE')` as Alice's JWT inserts membership and returns group UUID
+- [x] 1.4 `join_group` visible in Supabase Studio with SECURITY DEFINER label
+- [x] 1.5 `SELECT join_group('INVALID')` raises exception containing `invalid_invite_code`
+- [x] 1.6 `SELECT join_group('TESTCODE')` as Alice's JWT inserts membership and returns group UUID
 
 ### Phase 2: Shared Types + Create Group API Route
 
