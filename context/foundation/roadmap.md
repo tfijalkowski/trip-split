@@ -141,8 +141,8 @@ Fundacje poniżej zakładają, że wymienione elementy są obecne i NIE scaffold
 
 | Roadmap ID | Change ID            | Sugerowany tytuł zadania                                        | Gotowe do `/10x-plan` | Uwagi                                          |
 |------------|----------------------|-----------------------------------------------------------------|-----------------------|------------------------------------------------|
-| F-01       | google-sso           | [F-01] Podłącz Google OAuth (zastąp signInWithPassword)         | tak                   | Uruchom `/10x-plan google-sso`                 |
-| F-02       | db-schema-rls        | [F-02] Schema DB + polityki RLS + Realtime                      | tak                   | Uruchom `/10x-plan db-schema-rls`; równolegle z F-01 |
+| F-01       | google-sso           | [F-01] Podłącz Google OAuth (zastąp signInWithPassword)         | —                     | ✅ Done                                         |
+| F-02       | db-schema-rls        | [F-02] Schema DB + polityki RLS + Realtime                      | —                     | ✅ Done                                         |
 | S-01       | group-join-flow      | [S-01] Tworzenie grupy, link zaproszenia, dołączenie            | —                     | ✅ Done — d548edc                               |
 | S-02       | expense-balance-live | [S-02] Dodawanie wydatku z podziałem + salda na żywo ⭐          | —                     | ✅ Done — 2f26ae0                                             |
 | S-03       | settlement-lock      | [S-03] Zamknięcie i otwarcie rozliczenia                        | nie                   | Czeka na S-02; must-have                       |
