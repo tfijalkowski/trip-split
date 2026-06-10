@@ -1,9 +1,9 @@
 ---
 change_id: db-schema-rls
 roadmap_id: F-02
-status: implementing
+status: impl_reviewed
 created: 2026-06-09
-updated: 2026-06-09
+updated: 2026-06-10
 ---
 
 # F-02: Schemat bazy danych + RLS + Realtime

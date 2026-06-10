@@ -170,6 +170,11 @@ CREATE POLICY "expenses: payer delete (unlocked)"
     AND NOT (SELECT is_locked FROM public.groups WHERE id = group_id)
   );
 
+-- groups: no DELETE policy (intentional) — group deletion is not part of MVP scope.
+-- group_members: no DELETE policy (intentional) — leave-group is not part of MVP scope.
+-- Note: RLS default-deny returns 0 rows / no error on DELETE, not an explicit error.
+-- Add DELETE policies in the migration that ships the corresponding feature.
+
 -- expense_participants: SELECT-only for group members
 -- No INSERT/UPDATE/DELETE: create_expense RPC (SECURITY DEFINER, S-02) handles all writes
 CREATE POLICY "expense_participants: member read"

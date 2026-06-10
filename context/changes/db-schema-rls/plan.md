@@ -36,6 +36,7 @@ After `supabase db push` (remote) or `supabase db reset` (local):
 - Supabase `config.toml` already references `./supabase/seed.sql` — the file just needs to exist
 - RLS policy on `group_members` that queries its own table causes infinite recursion; a `SECURITY DEFINER` helper function is the canonical Supabase fix
 - `is_locked DEFAULT false` means the settlement lock is schema-present but functionally inactive until S-03 ships; no new migration needed in S-03 for expense policies
+- Tables must precede `is_group_member()` in migration order — Postgres validates `sql`-language function bodies at `CREATE` time, so `group_members` must exist before the function that references it
 
 ## What We're NOT Doing
 
@@ -445,26 +446,26 @@ The S-02 migration (`member_balances` VIEW + `create_expense` RPC) will be a sep
 
 #### Automated
 
-- [x] 1.1 `supabase db push` (or `db reset`) completes with exit code 0
-- [x] 1.2 All 5 tables present in `pg_tables WHERE schemaname = 'public'`
-- [x] 1.3 `expenses` and `expense_participants` in `pg_publication_tables` for `supabase_realtime`
-- [x] 1.4 `on_auth_user_created` trigger exists in `information_schema.triggers`
-- [x] 1.5 `is_group_member` function exists in `pg_proc`
+- [x] 1.1 `supabase db push` (or `db reset`) completes with exit code 0 — 0d49700
+- [x] 1.2 All 5 tables present in `pg_tables WHERE schemaname = 'public'` — 0d49700
+- [x] 1.3 `expenses` and `expense_participants` in `pg_publication_tables` for `supabase_realtime` — 0d49700
+- [x] 1.4 `on_auth_user_created` trigger exists in `information_schema.triggers` — 0d49700
+- [x] 1.5 `is_group_member` function exists in `pg_proc` — 0d49700
 
 #### Manual (RLS verification)
 
-- [x] 1.6 All 5 tables show "RLS Enabled" in Supabase Studio
-- [x] 1.7 All policies present and named correctly per table
-- [x] 1.8 Cross-group isolation: User A cannot SELECT from a group they don't belong to
-- [x] 1.9 Lock enforcement: INSERT into expenses on a locked group fails with RLS violation
-- [x] 1.10 Direct INSERT into expense_participants fails (no INSERT policy for authenticated)
+- [x] 1.6 All 5 tables show "RLS Enabled" in Supabase Studio — 0d49700
+- [x] 1.7 All policies present and named correctly per table — 0d49700
+- [x] 1.8 Cross-group isolation: User A cannot SELECT from a group they don't belong to — 0d49700
+- [x] 1.9 Lock enforcement: INSERT into expenses on a locked group fails with RLS violation — 0d49700
+- [x] 1.10 Direct INSERT into expense_participants fails (no INSERT policy for authenticated) — 0d49700
 
 ### Phase 2: Seed
 
 #### Manual
 
-- [ ] 2.1 `supabase db reset` completes without errors
-- [ ] 2.2 `SELECT COUNT(*) FROM profiles` → 2
-- [ ] 2.3 `SELECT name, invite_code FROM groups` → `Test Trip | TESTCODE`
-- [ ] 2.4 `SELECT COUNT(*) FROM group_members` → 2
-- [ ] 2.5 `SELECT COUNT(*) FROM expenses` → 0
+- [x] 2.1 `supabase db reset` completes without errors
+- [x] 2.2 `SELECT COUNT(*) FROM profiles` → 2
+- [x] 2.3 `SELECT name, invite_code FROM groups` → `Test Trip | TESTCODE`
+- [x] 2.4 `SELECT COUNT(*) FROM group_members` → 2
+- [x] 2.5 `SELECT COUNT(*) FROM expenses` → 0
