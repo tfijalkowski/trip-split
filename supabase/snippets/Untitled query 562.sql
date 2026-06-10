@@ -1,1 +1,1 @@
-select * from groups;
+select * from auth.users;

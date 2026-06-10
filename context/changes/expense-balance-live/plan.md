@@ -218,8 +218,8 @@ CREATE OR REPLACE FUNCTION create_expense(
   p_description  text,
   p_amount       integer,
   p_paid_by      uuid,
-  p_expense_date date DEFAULT NULL,
-  p_participants jsonb
+  p_participants jsonb,
+  p_expense_date date DEFAULT NULL
 ) RETURNS uuid
 LANGUAGE plpgsql SECURITY DEFINER AS $$
 DECLARE v_expense_id uuid;
@@ -238,9 +238,9 @@ BEGIN
   RETURN v_expense_id;
 END;
 $$;
-REVOKE EXECUTE ON FUNCTION public.create_expense(uuid, text, integer, uuid, date, jsonb)
+REVOKE EXECUTE ON FUNCTION public.create_expense(uuid, text, integer, uuid, jsonb, date)
   FROM anon, public;
-GRANT  EXECUTE ON FUNCTION public.create_expense(uuid, text, integer, uuid, date, jsonb)
+GRANT  EXECUTE ON FUNCTION public.create_expense(uuid, text, integer, uuid, jsonb, date)
   TO authenticated;
 ```
 
@@ -459,36 +459,36 @@ This creates the directory and a timestamped `.sql` file. Paste the VIEW + RPC S
 
 #### Automated
 
-- [x] 1.1 `npm run build` completes without errors
-- [x] 1.2 `npx tsc --noEmit` passes with zero errors
-- [x] 1.3 `npm run lint` passes with no new errors
-- [x] 1.4 `src/components/ui/table.tsx` and `src/components/ui/sheet.tsx` exist
+- [x] 1.1 `npm run build` completes without errors — e6c8a97
+- [x] 1.2 `npx tsc --noEmit` passes with zero errors — e6c8a97
+- [x] 1.3 `npm run lint` passes with no new errors — e6c8a97
+- [x] 1.4 `src/components/ui/table.tsx` and `src/components/ui/sheet.tsx` exist — e6c8a97
 
 #### Manual
 
-- [x] 1.5 `package.json` lists `@tanstack/react-table`, `react-hook-form`, `zod` in `dependencies`
-- [x] 1.6 `astro.config.mjs` has `PUBLIC_SUPABASE_URL` and `PUBLIC_SUPABASE_ANON_KEY` with `context: "client"`
-- [x] 1.7 `.env.example` documents both public vars
-- [x] 1.8 `src/lib/supabase.ts` exports `createBrowserClient()`
-- [x] 1.9 `src/types.ts` exports `Expense`, `ExpenseParticipant`, `MemberBalance`, `ExpenseWithParticipants`, and updated `GroupMember` (with `display_name`, `email`)
+- [x] 1.5 `package.json` lists `@tanstack/react-table`, `react-hook-form`, `zod` in `dependencies` — e6c8a97
+- [x] 1.6 `astro.config.mjs` has `PUBLIC_SUPABASE_URL` and `PUBLIC_SUPABASE_ANON_KEY` with `context: "client"` — e6c8a97
+- [x] 1.7 `.env.example` documents both public vars — e6c8a97
+- [x] 1.8 `src/lib/supabase.ts` exports `createBrowserClient()` — e6c8a97
+- [x] 1.9 `src/types.ts` exports `Expense`, `ExpenseParticipant`, `MemberBalance`, `ExpenseWithParticipants`, and updated `GroupMember` (with `display_name`, `email`) — e6c8a97
 
 ### Phase 2: Data Layer
 
 #### Automated
 
-- [ ] 2.1 `supabase db push` applies migration with no errors
-- [ ] 2.2 `SELECT * FROM member_balances` returns rows after test data inserted
-- [ ] 2.3 `npm run build` still passes
-- [ ] 2.4 `npx tsc --noEmit` still passes
+- [x] 2.1 `supabase db push` applies migration with no errors
+- [x] 2.2 `SELECT * FROM member_balances` returns rows after test data inserted
+- [x] 2.3 `npm run build` still passes
+- [x] 2.4 `npx tsc --noEmit` still passes
 
 #### Manual
 
-- [ ] 2.5 `create_expense` RPC inserts atomically — verified via Supabase SQL editor
-- [ ] 2.6 `POST /api/groups/:id/expenses` with valid auth + body → `201`
-- [ ] 2.7 `POST /api/groups/:id/expenses` without auth → `401`
-- [ ] 2.8 `POST /api/groups/:id/expenses` by non-member → `403`
-- [ ] 2.9 `POST /api/groups/:id/expenses` with mismatched participant sum → `400`
-- [ ] 2.10 `member_balances` shows updated balances after RPC call
+- [x] 2.5 `create_expense` RPC inserts atomically — verified via Supabase SQL editor
+- [x] 2.6 `POST /api/groups/:id/expenses` with valid auth + body → `201`
+- [x] 2.7 `POST /api/groups/:id/expenses` without auth → `401`
+- [x] 2.8 `POST /api/groups/:id/expenses` by non-member → `403`
+- [x] 2.9 `POST /api/groups/:id/expenses` with mismatched participant sum → `400`
+- [x] 2.10 `member_balances` shows updated balances after RPC call
 
 ### Phase 3: Group Detail Page & React Islands
 
