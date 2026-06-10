@@ -3,7 +3,7 @@ project: TripSplit
 version: 1
 status: draft
 created: 2026-05-26
-updated: 2026-05-26
+updated: 2026-06-10
 prd_version: 3
 main_goal: speed
 top_blocker: capacity
@@ -31,7 +31,7 @@ Manualne rozliczanie wydatków po wyjeździe wakacyjnym to Excel + WhatsApp — 
 |------|----------------------|--------------------------------------------------------------------|---------------|-------------------------------------------------------|----------|
 | F-01 | google-sso           | (fundacja) Google OAuth działa; sesje oparte na cookie             | —             | FR-001, FR-002, Access Control                        | ready    |
 | F-02 | db-schema-rls        | (fundacja) Schema + RLS wylądowały; Realtime włączony              | —             | FR-003, FR-004, FR-005, FR-006, FR-007, FR-008, FR-009, FR-010, FR-015, FR-016, Business Logic, NFR | ready |
-| S-01 | group-join-flow      | stworzyć grupę, skopiować link zaproszenia i dołączyć przez link   | F-01, F-02    | FR-003, FR-004, FR-005                                | proposed |
+| S-01 | group-join-flow      | stworzyć grupę, skopiować link zaproszenia i dołączyć przez link   | F-01, F-02    | FR-003, FR-004, FR-005                                | done     |
 | S-02 | expense-balance-live | dodać wydatek z podziałem i widzieć salda na żywo                  | S-01          | US-01, FR-006, FR-007, FR-008, FR-009, FR-010         | proposed |
 | S-03 | settlement-lock      | zamknąć i otworzyć rozliczenie (twórca grupy)                      | S-02          | FR-015, FR-016                                        | proposed |
 | S-04 | expense-edit-delete  | edytować i usunąć swój własny wydatek                              | S-02          | FR-011, FR-012                                        | proposed |
@@ -98,7 +98,7 @@ Fundacje poniżej zakładają, że wymienione elementy są obecne i NIE scaffold
 - **Blockers:** —
 - **Unknowns:** —
 - **Risk:** Link zaproszenia to jedyna metoda dołączania. Jeśli strona dołączania nie obsługuje poprawnie stanu „niezalogowany kliknął link" (redirect do logowania + powrót po logowaniu do właściwej grupy), użytkownik ląduje na stronie głównej zamiast w grupie. Mitygacja: obsłuż `redirect_to` jako parametr query w flow logowania.
-- **Status:** proposed
+- **Status:** done
 
 ### S-02: Dodawanie wydatku z podziałem + salda na żywo
 
@@ -143,8 +143,8 @@ Fundacje poniżej zakładają, że wymienione elementy są obecne i NIE scaffold
 |------------|----------------------|-----------------------------------------------------------------|-----------------------|------------------------------------------------|
 | F-01       | google-sso           | [F-01] Podłącz Google OAuth (zastąp signInWithPassword)         | tak                   | Uruchom `/10x-plan google-sso`                 |
 | F-02       | db-schema-rls        | [F-02] Schema DB + polityki RLS + Realtime                      | tak                   | Uruchom `/10x-plan db-schema-rls`; równolegle z F-01 |
-| S-01       | group-join-flow      | [S-01] Tworzenie grupy, link zaproszenia, dołączenie            | nie                   | Czeka na F-01 i F-02                           |
-| S-02       | expense-balance-live | [S-02] Dodawanie wydatku z podziałem + salda na żywo ⭐          | nie                   | Czeka na S-01; gwiazda przewodnia              |
+| S-01       | group-join-flow      | [S-01] Tworzenie grupy, link zaproszenia, dołączenie            | —                     | ✅ Done — d548edc                               |
+| S-02       | expense-balance-live | [S-02] Dodawanie wydatku z podziałem + salda na żywo ⭐          | tak                   | Uruchom `/10x-plan expense-balance-live`; gwiazda przewodnia |
 | S-03       | settlement-lock      | [S-03] Zamknięcie i otwarcie rozliczenia                        | nie                   | Czeka na S-02; must-have                       |
 | S-04       | expense-edit-delete  | [S-04] Edycja i usuwanie własnego wydatku                       | nie                   | Czeka na S-02; nice-to-have, równoległy z S-03 |
 

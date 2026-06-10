@@ -310,10 +310,10 @@ The new migration (`20260610000001_join_group_rpc.sql`) adds a function only —
 
 #### Manual
 
-- [x] 3.1 Creator flow: create group → land on `/groups/[id]` with invite URL and member list
-- [x] 3.2 Invite flow (new user, incognito): open invite URL → sign in → land on `/groups/[id]` as new member
-- [x] 3.3 Invite flow (existing user): open invite URL while logged in → immediately land on `/groups/[id]`
-- [x] 3.4 Already-a-member: open invite URL twice → no error, no duplicate row
-- [x] 3.5 Invalid code: `/join/BADCODE` → `/dashboard` with error banner
-- [x] 3.6 Protected route: `/groups/[id]` unauthenticated → `/auth/signin`
-- [x] 3.7 Cross-group isolation: non-member navigates to group URL → redirected to dashboard
+- [x] 3.1 Creator flow: create group → land on `/groups/[id]` with invite URL and member list — d548edc
+- [x] 3.2 Invite flow (new user, incognito): open invite URL → sign in → land on `/groups/[id]` as new member — d548edc
+- [x] 3.3 Invite flow (existing user): open invite URL while logged in → immediately land on `/groups/[id]` — d548edc
+- [x] 3.4 Already-a-member: open invite URL twice → no error, no duplicate row — d548edc
+- [x] 3.5 Invalid code: `/join/BADCODE` → `/dashboard` with error banner — d548edc
+- [x] 3.6 Protected route: `/groups/[id]` unauthenticated → `/auth/signin` — d548edc
+- [x] 3.7 Cross-group isolation: non-member navigates to group URL → redirected to dashboard — d548edc
