@@ -85,11 +85,13 @@ export interface UserProfile {
 - `export const prerender = false` at the top
 - Export a `PATCH` handler (Astro named export convention matching `GET`, `POST` in other routes)
 - Auth check: `context.locals.user` — return 401 `{ error: "Unauthorized" }` if absent
-- Body: `await context.request.json()` → destructure `{ display_name }`
+- Supabase guard: `context.locals.supabase` — return 500 `{ error: "Supabase is not configured" }` if absent
+- Body: wrap `await context.request.json()` in its own try/catch; on throw return 400 `{ error: "Invalid JSON body" }`; destructure `{ display_name }` from parsed result
 - Validation: must be a string; trim it; reject empty string or length > 50 → return 400 `{ error: "Display name must be between 1 and 50 characters." }`
-- Supabase call: `context.locals.supabase.from('profiles').update({ display_name: trimmed }).eq('id', context.locals.user.id).select('display_name').single()`
+- Supabase call: `const { error } = await context.locals.supabase.from('profiles').update({ display_name: trimmed }).eq('id', context.locals.user.id).select('display_name').single()`
+- DB error check: if `error` is truthy → return 500 `{ error: "Failed to update display name" }`
 - Success: `new Response(JSON.stringify({ display_name: trimmed }), { status: 200, headers: { 'Content-Type': 'application/json' } })`
-- Wrap entire handler body in try/catch; return 500 `{ error: "Internal server error" }` on unexpected throw
+- Wrap entire handler body in outer try/catch; return 500 `{ error: "Internal server error" }` on unexpected throw
 
 ### Success Criteria
 
@@ -140,7 +142,7 @@ Create `/profile` as a protected SSR Astro page that fetches the current user's 
 - On submit: trim `value`; if empty → set error "Name is required", return early (no fetch); if length > 50 → set error "Name must be 50 characters or fewer", return early
 - Fetch: `fetch('/api/users/profile', { method: 'PATCH', body: JSON.stringify({ display_name: trimmed }), headers: { 'Content-Type': 'application/json' } })`
 - On `response.ok`: set `success=true`, `error=null`, update `value` to trimmed
-- On non-ok response: parse `{ error }` from body, set `error` state, `success=false`
+- On non-ok response: attempt `response.json()` in a try/catch; on success extract `{ error }` and set `error` state; on parse failure set `error` to `"Something went wrong. Please try again."`; set `success=false` in both cases
 - Render `success && <p>Name saved</p>` and `error && <p>{error}</p>` below the submit button
 - Clear `success` when the input value changes (so the confirmation disappears on next edit)
 
@@ -151,7 +153,7 @@ Create `/profile` as a protected SSR Astro page that fetches the current user's 
 **Intent:** SSR page that fetches the current user's profile from the database and renders `ProfileForm` as a client-side island.
 
 **Contract:**
-- In frontmatter: read `Astro.locals.user`; query `Astro.locals.supabase.from('profiles').select('id, email, display_name').eq('id', user.id).single()`; if no data returned, redirect to `/auth/signin`
+- In frontmatter: destructure `{ supabase, user }` from `Astro.locals`; guard `if (!supabase || !user) return Astro.redirect('/auth/signin')`; query `supabase.from('profiles').select('id, email, display_name').eq('id', user.id).single()`; if no data returned, redirect to `/auth/signin`
 - Import `ProfileForm` and render `<ProfileForm client:load displayName={profile.display_name} email={profile.email} />`
 - Wrap in `Layout.astro`; set page `<title>Profile</title>`
 

@@ -1,8 +1,9 @@
 ---
 change_id: user-profile-display-name
-status: planned
+status: plan_reviewed
 created: 2026-06-11
 updated: 2026-06-11
+plan_reviewed: 2026-06-11
 prd_refs: US-02, FR-017, FR-018
 roadmap_id: S-05
 ---
