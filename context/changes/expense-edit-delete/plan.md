@@ -66,6 +66,8 @@ Two phases in dependency order:
 
 **Edit form pre-population in custom split mode:** The stored `expense_participants` have `amount_owed` in grosze — the original split mode (equal/percentage/custom) is not persisted. Pre-populate `split_mode = "custom"` and `customAmounts = { [user_id]: (amount_owed / 100).toFixed(2) }` for every existing participant. The user may switch modes freely in the form; the validation logic is the same as `AddExpenseSheet`.
 
+**`update_expense` RETURNS void — check only `rpcError`, not `!data`.** Unlike `create_expense` which returns the new expense `uuid`, `update_expense` returns void. The Supabase client sets `data = null` for void functions. If the PATCH handler copies the POST handler's `if (rpcError || !expenseId)` guard, `!data` is always `true` → always 500. For PATCH, the correct check is `if (rpcError)` only.
+
 **Two Realtime events, one refetch:** After a successful PATCH or DELETE, the API route calls `onSuccess` (refetch) immediately. The existing `expenses` Realtime subscription will also fire (triggering another refetch). Both are harmless at trip scale — refetch is idempotent.
 
 ---
@@ -142,6 +144,7 @@ Apply with `supabase db push`.
 `export const prerender = false`
 
 Both handlers follow the same guard sequence:
+0. Supabase client present → 500 if missing (matches POST pattern; never happens in practice)
 1. Auth → 401 if no user
 2. Extract `groupId` from `context.params.id`, `expenseId` from `context.params.expenseId` → 400 if missing
 3. Membership check: SELECT from `group_members` WHERE `group_id = groupId AND user_id = user.id` → 403 if not a member
@@ -154,8 +157,8 @@ Both handlers follow the same guard sequence:
 - Returns `200 {}` on success; `500` on RPC error
 
 `DELETE`:
-- After ownership verified: `supabase.from("expenses").delete().eq("id", expenseId)` (CASCADE removes participants)
-- Returns `200 {}` on success; `500` on error
+- After ownership verified: `supabase.from("expenses").delete().eq("id", expenseId).select("id")` (CASCADE removes participants; `.select("id")` returns the deleted row so we can detect silent RLS rejection)
+- If `error` → `500`. If `data?.length === 0` and no error → `423 { error: "Group settlement is locked" }` (group was locked between the lock check and the actual delete). Otherwise → `200 {}`
 
 ### Success Criteria:
 
@@ -227,7 +230,7 @@ New state:
 
 **Edit submit**: validate (same rules as `AddExpenseSheet` — description required, amount positive, participants non-empty, split sums correct). Call `PATCH /api/groups/${groupId}/expenses/${expense.id}` with body `{ description, amount_grosze, expense_date, participants }`. On 423: show "Settlement was locked while you were editing". On success: `onSuccess()`, `onOpenChange(false)`.
 
-Reset `mode` to `"view"` and clear all form/error state when the sheet closes (`onOpenChange(false)`).
+Reset `mode` to `"view"`, `confirmingDelete` to `false`, and clear all form/error state (`serverError = null`, form fields to defaults) when the sheet closes (`onOpenChange(false)`).
 
 #### 2. Update src/components/expenses/ExpenseTable.tsx
 
