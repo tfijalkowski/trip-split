@@ -52,11 +52,15 @@ export default function GroupExpensesIsland({
       .on(
         "postgres_changes",
         { event: "*", schema: "public", table: "expenses", filter: `group_id=eq.${groupId}` },
-        () => {
+        (payload) => {
+          console.log("[Realtime event]", payload);
           if (mounted) void refetch();
         },
       )
-      .subscribe();
+      .subscribe((status, err) => {
+        if (import.meta.env.DEV) console.log("[Realtime]", status, err ?? "");
+        else if (err) console.error("[Realtime]", status, err);
+      });
 
     return () => {
       mounted = false;
