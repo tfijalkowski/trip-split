@@ -14,6 +14,7 @@ import {
 import type { ExpenseWithParticipants, GroupMember } from "@/types";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
+import { ExpenseDetailSheet } from "./ExpenseDetailSheet";
 
 interface Props {
   expenses: ExpenseWithParticipants[];
@@ -28,6 +29,7 @@ export function ExpenseTable({ expenses, members }: Props) {
   const [sorting, setSorting] = useState<SortingState>([{ id: "expense_date", desc: true }]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [pagination, setPagination] = useState<PaginationState>({ pageIndex: 0, pageSize: 20 });
+  const [selectedExpense, setSelectedExpense] = useState<ExpenseWithParticipants | null>(null);
 
   const columns = [
     columnHelper.accessor("description", {
@@ -68,24 +70,34 @@ export function ExpenseTable({ expenses, members }: Props) {
     getPaginationRowModel: getPaginationRowModel(),
   });
 
+  const activeFilterUuid = (table.getColumn("paid_by")?.getFilterValue() as string | undefined) ?? "";
+  const filteredMember = activeFilterUuid ? memberMap.get(activeFilterUuid) : undefined;
+  const filteredTotal = table.getFilteredRowModel().rows.reduce((sum, row) => sum + row.original.amount, 0);
+  const totalLabel = filteredMember ? (filteredMember.display_name ?? filteredMember.email) : "Total";
+
   return (
     <div className="rounded-xl border border-white/10 bg-white/10 p-5 backdrop-blur-xl">
       <div className="mb-3 flex items-center justify-between">
         <p className="text-xs font-semibold tracking-wide text-white/50 uppercase">Expenses</p>
-        <select
-          className="rounded bg-black/20 px-2 py-1 text-sm text-white/80"
-          value={(table.getColumn("paid_by")?.getFilterValue() as string | undefined) ?? ""}
-          onChange={(e) => {
-            table.getColumn("paid_by")?.setFilterValue(e.target.value || undefined);
-          }}
-        >
-          <option value="">All payers</option>
-          {members.map((m) => (
-            <option key={m.user_id} value={m.user_id}>
-              {m.display_name ?? m.email}
-            </option>
-          ))}
-        </select>
+        <div className="flex items-center gap-3">
+          <span className="text-sm text-white/60">
+            {totalLabel}: <span className="font-medium text-white">{(filteredTotal / 100).toFixed(2)} PLN</span>
+          </span>
+          <select
+            className="rounded bg-black/20 px-2 py-1 text-sm text-white/80"
+            value={activeFilterUuid}
+            onChange={(e) => {
+              table.getColumn("paid_by")?.setFilterValue(e.target.value || undefined);
+            }}
+          >
+            <option value="">All payers</option>
+            {members.map((m) => (
+              <option key={m.user_id} value={m.user_id}>
+                {m.display_name ?? m.email}
+              </option>
+            ))}
+          </select>
+        </div>
       </div>
 
       <Table>
@@ -114,7 +126,13 @@ export function ExpenseTable({ expenses, members }: Props) {
             </TableRow>
           ) : (
             table.getRowModel().rows.map((row) => (
-              <TableRow key={row.id}>
+              <TableRow
+                key={row.id}
+                className="cursor-pointer hover:bg-white/5"
+                onClick={() => {
+                  setSelectedExpense(row.original);
+                }}
+              >
                 {row.getVisibleCells().map((cell) => (
                   <TableCell key={cell.id} className="text-white/80">
                     {flexRender(cell.column.columnDef.cell, cell.getContext())}
@@ -125,6 +143,15 @@ export function ExpenseTable({ expenses, members }: Props) {
           )}
         </TableBody>
       </Table>
+
+      <ExpenseDetailSheet
+        expense={selectedExpense}
+        members={members}
+        open={selectedExpense !== null}
+        onOpenChange={(v) => {
+          if (!v) setSelectedExpense(null);
+        }}
+      />
 
       <div className="mt-3 flex items-center justify-between text-sm text-white/50">
         <div className="flex gap-2">

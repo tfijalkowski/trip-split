@@ -39,9 +39,11 @@ A logged-in group member navigates to `/groups/<id>`, sees a balance panel and e
 - `src/pages/groups/[id].astro` — SSR group detail page with initial data fetch
 - `member_balances` PostgreSQL VIEW + `create_expense` RPC (one migration)
 - `POST /api/groups/[id]/expenses` API route
-- `GroupExpensesIsland`, `BalancePanel`, `ExpenseTable`, `AddExpenseSheet` React components
+- `GroupExpensesIsland`, `BalancePanel`, `ExpenseTable`, `AddExpenseSheet`, `ExpenseDetailSheet` React components
 - Three split modes: equal (auto-distributed), percentage, custom amount
 - Supabase Realtime subscription on `expenses` filtered by `group_id`
+- Running total sum in expense list header (respects payer filter)
+- Read-only expense detail slide-over (opened by clicking a row)
 
 **Out of scope:**
 - Expense edit / delete (S-04)
@@ -62,6 +64,7 @@ The Astro SSR page fetches initial expenses, balances, and group members server-
 | 1. Infrastructure | npm deps, env vars, browser client, types, shadcn primitives, route protection | `astro:env/client` must not be called server-side — lazy init required |
 | 2. Data Layer | `member_balances` VIEW, `create_expense` RPC, POST API route | RPC uses `SECURITY DEFINER` — API route must validate membership before calling |
 | 3. UI | Group detail page + four React components, all split modes, Realtime | Two-session Realtime test is the north-star gate |
+| 4. Expense Total & Detail | Running total sum (filter-aware) + read-only expense detail Sheet | `bg-background` defaults to white without `class="dark"` on `<html>` — text invisible |
 
 **Prerequisites:** F-01, F-02, S-01 complete; local `.env` / `.dev.vars` populated with `PUBLIC_SUPABASE_URL` and `PUBLIC_SUPABASE_ANON_KEY`
 **Estimated effort:** ~3 focused sessions across 3 phases

@@ -411,6 +411,65 @@ Build the Astro SSR page and the four React components. The Astro page handles t
 
 ---
 
+## Phase 4: Expense Total & Detail View
+
+### Overview
+
+Two UI enhancements discovered during manual testing of Phase 3: a running total sum in the expense list header (respects the payer filter) and a slide-over detail sheet opened by clicking any expense row.
+
+### Changes Required:
+
+#### 1. Expense total in ExpenseTable header
+
+**File**: `src/components/expenses/ExpenseTable.tsx`
+
+**Intent**: Show the sum of all currently filtered expenses above the table. When the payer filter is active, label the total with the member's name instead of "Total". Uses `table.getFilteredRowModel()` so the sum spans all pages, not just the visible one.
+
+**Contract**: Compute `filteredTotal` from `table.getFilteredRowModel().rows` after `useReactTable`. Derive `filteredMember` from `memberMap` using the active filter UUID. Render `{filteredMember?.display_name ?? filteredMember?.email ?? "Total"}: {(filteredTotal / 100).toFixed(2)} PLN` in the header row alongside the payer `<select>`.
+
+#### 2. Row click → expense detail
+
+**File**: `src/components/expenses/ExpenseTable.tsx`
+
+**Intent**: Add `selectedExpense` state and wire `onClick` on each `<TableRow>` to set it. Render `<ExpenseDetailSheet>` controlled by that state.
+
+**Contract**: `useState<ExpenseWithParticipants | null>(null)`. Pass `open={selectedExpense !== null}` and `onOpenChange={(v) => { if (!v) setSelectedExpense(null); }}`. Import `ExpenseDetailSheet` from `./ExpenseDetailSheet`.
+
+#### 3. Create ExpenseDetailSheet component
+
+**File**: `src/components/expenses/ExpenseDetailSheet.tsx` (new)
+
+**Intent**: Read-only slide-over Sheet showing all fields of an expense: description (title), date, total amount, payer name resolved from `members`, and the participant split as a list of name → amount rows.
+
+**Contract**: Props `{ expense: ExpenseWithParticipants | null, members: GroupMember[], open: boolean, onOpenChange: (v: boolean) => void }`. Uses `Sheet`, `SheetContent`, `SheetHeader`, `SheetTitle`, `SheetDescription` (required by Radix — set `className="sr-only"` to keep it visually hidden). Content renders only when `expense` is non-null. Resolves payer and each participant's display name via `memberMap`.
+
+#### 4. Enable dark mode in Layout
+
+**File**: `src/layouts/Layout.astro`
+
+**Intent**: Activate shadcn/ui dark-mode CSS variables across the app. Without this, `bg-background` on `SheetContent` resolves to white (`:root` default), making white-on-white text invisible.
+
+**Contract**: Add `class="dark"` to `<html lang="en">`. The `.dark` CSS selector in `global.css` sets `--background: oklch(0.145 0 0)` and all dark-variant tokens, which shadcn/ui components consume via `bg-background` / `text-foreground`.
+
+### Success Criteria:
+
+#### Automated Verification:
+
+- `npx tsc --noEmit` passes with zero errors
+- `npm run lint` passes with no new errors
+
+#### Manual Verification:
+
+- Total sum visible in the Expenses panel header; value equals sum of all filtered rows (not just current page)
+- Switching the payer filter changes the total and updates the label to the selected member's name
+- Clicking any expense row opens the detail Sheet from the right
+- Detail Sheet shows: description, date, total PLN amount, payer name, and per-participant split amounts
+- Detail Sheet closes via the × button or clicking the overlay
+
+**Implementation Note**: Phase 4 is a pure UI addition — no DB or API changes. Mark complete after manual verification passes.
+
+---
+
 ## Testing Strategy
 
 ### Unit Tests:
@@ -512,3 +571,18 @@ This creates the directory and a timestamped `.sql` file. Paste the VIEW + RPC S
 - [x] 3.13 Column sorting and pagination controls work — 2f26ae0
 - [x] 3.14 All amounts display as PLN (grosze ÷ 100, two decimal places) — 2f26ae0
 - [x] 3.15 Two-session Realtime test: balance updates in session B within ~1 second after add in session A — 2f26ae0
+
+### Phase 4: Expense Total & Detail View
+
+#### Automated
+
+- [x] 4.1 `npx tsc --noEmit` passes with zero errors
+- [x] 4.2 `npm run lint` passes with no new errors
+
+#### Manual
+
+- [x] 4.3 Total sum visible in header; equals sum of all filtered rows across all pages
+- [x] 4.4 Payer filter changes total label to selected member's name
+- [x] 4.5 Clicking an expense row opens the detail Sheet
+- [x] 4.6 Detail Sheet shows description, date, amount, payer name, and per-participant split
+- [x] 4.7 Detail Sheet closes via × or overlay click
