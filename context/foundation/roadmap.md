@@ -34,7 +34,7 @@ Manualne rozliczanie wydatków po wyjeździe wakacyjnym to Excel + WhatsApp — 
 | F-02 | db-schema-rls        | (fundacja) Schema + RLS wylądowały; Realtime włączony            | —             | FR-003, FR-004, FR-005, FR-006, FR-007, FR-008, FR-009, FR-010, FR-015, FR-016, Business Logic, NFR | done     |
 | S-01 | group-join-flow      | stworzyć grupę, skopiować link zaproszenia i dołączyć przez link | F-01, F-02    | FR-003, FR-004, FR-005                                                                              | done     |
 | S-02 | expense-balance-live | dodać wydatek z podziałem i widzieć salda na żywo                | S-01          | US-01, FR-006, FR-007, FR-008, FR-009, FR-010                                                       | done     |
-| S-03 | settlement-lock             | zamknąć i otworzyć rozliczenie (twórca grupy)                    | S-02          | FR-015, FR-016                                                                                      | proposed |
+| S-03 | settlement-lock             | zamknąć i otworzyć rozliczenie (twórca grupy)                    | S-02          | FR-015, FR-016                                                                                      | done     |
 | S-04 | expense-edit-delete         | edytować i usunąć swój własny wydatek                            | S-02          | FR-011, FR-012                                                                                      | proposed |
 | S-05 | user-profile-display-name   | zmienić swoją nazwę wyświetlaną i widzieć ją w całej aplikacji   | F-01, F-02    | US-02, FR-017, FR-018                                                                               | planned  |
 
