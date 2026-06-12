@@ -34,7 +34,7 @@ Manualne rozliczanie wydatków po wyjeździe wakacyjnym to Excel + WhatsApp — 
 | F-02 | db-schema-rls        | (fundacja) Schema + RLS wylądowały; Realtime włączony            | —             | FR-003, FR-004, FR-005, FR-006, FR-007, FR-008, FR-009, FR-010, FR-015, FR-016, Business Logic, NFR | done     |
 | S-01 | group-join-flow      | stworzyć grupę, skopiować link zaproszenia i dołączyć przez link | F-01, F-02    | FR-003, FR-004, FR-005                                                                              | done     |
 | S-02 | expense-balance-live | dodać wydatek z podziałem i widzieć salda na żywo                | S-01          | US-01, FR-006, FR-007, FR-008, FR-009, FR-010                                                       | done     |
-| S-03 | settlement-lock             | zamknąć i otworzyć rozliczenie (twórca grupy)                    | S-02          | FR-015, FR-016                                                                                      | proposed |
+| S-03 | settlement-lock             | zamknąć i otworzyć rozliczenie (twórca grupy)                    | S-02          | FR-015, FR-016                                                                                      | done     |
 | S-04 | expense-edit-delete         | edytować i usunąć swój własny wydatek                            | S-02          | FR-011, FR-012                                                                                      | proposed |
 | S-05 | user-profile-display-name   | zmienić swoją nazwę wyświetlaną i widzieć ją w całej aplikacji   | F-01, F-02    | US-02, FR-017, FR-018                                                                               | planned  |
 
@@ -129,7 +129,7 @@ Fundacje poniżej zakładają, że wymienione elementy są obecne i NIE scaffold
 - **Blockers:** —
 - **Unknowns:** —
 - **Risk:** Status zamknięcia musi być wymuszony po stronie serwera, nie tylko w UI — w przeciwnym razie uczestnik może obejść blokadę przez bezpośrednie wywołanie API. Mitygacja: każdy endpoint CRUD wydatków musi sprawdzać `group.status` przed wykonaniem operacji.
-- **Status:** proposed
+- **Status:** done
 
 ### S-04: Edycja i usuwanie wydatku
 
@@ -166,7 +166,7 @@ Fundacje poniżej zakładają, że wymienione elementy są obecne i NIE scaffold
 | F-02       | db-schema-rls        | [F-02] Schema DB + polityki RLS + Realtime              | —                     | ✅ Done                          |
 | S-01       | group-join-flow      | [S-01] Tworzenie grupy, link zaproszenia, dołączenie    | —                     | ✅ Done — d548edc                |
 | S-02       | expense-balance-live | [S-02] Dodawanie wydatku z podziałem + salda na żywo ⭐  | —                     | ✅ Done — 2f26ae0                |
-| S-03       | settlement-lock      | [S-03] Zamknięcie i otwarcie rozliczenia                | tak                   | Must-have; przed S-04           |
+| S-03       | settlement-lock      | [S-03] Zamknięcie i otwarcie rozliczenia                | —                     | ✅ Done                          |
 | S-04       | expense-edit-delete         | [S-04] Edycja i usuwanie własnego wydatku                         | tak   | Nice-to-have; po S-03                                              |
 | S-05       | user-profile-display-name   | [S-05] Strona profilu — zmiana nazwy wyświetlanej                 | tak   | Plan reviewed — gotowe do `/10x-implement`                        |
 

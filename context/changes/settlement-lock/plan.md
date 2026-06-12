@@ -338,6 +338,14 @@ The `is_locked` check in the POST expenses endpoint adds one extra Supabase quer
 
 Run `supabase migration new settlement_lock` to create the timestamped file, paste three SQL statements in order: `ALTER TABLE` (adds `locked_at`), `ALTER PUBLICATION` (adds `groups` to Realtime), and `CREATE OR REPLACE FUNCTION join_group` (adds `is_locked` guard). Apply with `supabase db push`. Existing rows will have `locked_at = NULL` — no backfill needed.
 
+## Addendum — Unplanned but necessary files
+
+The following files were created/modified during implementation but were not listed in the plan. All are direct technical requirements of the planned work:
+
+- `src/lib/supabase.browser.ts` (new) — browser-side Supabase client factory extracted from `GroupExpensesIsland.tsx`. Required to set the user JWT on the Realtime client before subscribing; without it, `postgres_changes` channels register with `claims_role=anon` and RLS silently drops every event.
+- `supabase/migrations/20260612151059_groups_replica_identity_full.sql` (new) — `ALTER TABLE public.groups REPLICA IDENTITY FULL`. Required so that Supabase Realtime sends full row data in `payload.new` on UPDATE events. Without it the group channel callback receives an empty payload. Mirrors `20260610220000_expenses_replica_identity_full.sql`.
+- `src/pages/dashboard.astro` (modified) — Added `group_locked` to the `errorMessages` map. Required for the `/dashboard?error=group_locked` redirect (Phase 1, Change 6) to display a human-readable message rather than a raw query-string key.
+
 ## References
 
 - S-02 plan (Realtime pattern): `context/changes/expense-balance-live/plan.md`
@@ -358,37 +366,37 @@ Run `supabase migration new settlement_lock` to create the timestamped file, pas
 
 #### Automated
 
-- [ ] 1.1 `supabase db push` applies migration with no errors
-- [ ] 1.2 `npx tsc --noEmit` passes with zero errors
-- [ ] 1.3 `npm run build` passes
+- [x] 1.1 `supabase db push` applies migration with no errors — 21c56bc
+- [x] 1.2 `npx tsc --noEmit` passes with zero errors — 21c56bc
+- [x] 1.3 `npm run build` passes — 21c56bc
 
 #### Manual
 
-- [ ] 1.4 `locked_at` column present in `groups`; existing rows have `locked_at = null`
-- [ ] 1.5 `PATCH /api/groups/:id` with creator auth + `{ is_locked: true }` → `200`, `locked_at` set
-- [ ] 1.6 `PATCH /api/groups/:id` with creator auth + `{ is_locked: false }` → `200`, `locked_at = null`
-- [ ] 1.7 `PATCH /api/groups/:id` without auth → `401`
-- [ ] 1.8 `PATCH /api/groups/:id` from non-creator → `403`
-- [ ] 1.9 `POST /api/groups/:id/expenses` on locked group → `423`
-- [ ] 1.10 `POST /api/groups/:id/expenses` on unlocked group → `201` (no regression)
-- [ ] 1.11 Invite link for a locked group → `/dashboard?error=group_locked`
-- [ ] 1.12 Invite link for an unlocked group → join succeeds (no regression)
+- [x] 1.4 `locked_at` column present in `groups`; existing rows have `locked_at = null` — 21c56bc
+- [x] 1.5 `PATCH /api/groups/:id` with creator auth + `{ is_locked: true }` → `200`, `locked_at` set — 21c56bc
+- [x] 1.6 `PATCH /api/groups/:id` with creator auth + `{ is_locked: false }` → `200`, `locked_at = null` — 21c56bc
+- [x] 1.7 `PATCH /api/groups/:id` without auth → `401` — 21c56bc
+- [x] 1.8 `PATCH /api/groups/:id` from non-creator → `403` — 21c56bc
+- [x] 1.9 `POST /api/groups/:id/expenses` on locked group → `423` — 21c56bc
+- [x] 1.10 `POST /api/groups/:id/expenses` on unlocked group → `201` (no regression) — 21c56bc
+- [x] 1.11 Invite link for a locked group → `/dashboard?error=group_locked` — c4a1596
+- [x] 1.12 Invite link for an unlocked group → join succeeds (no regression) — c4a1596
 
 ### Phase 2: UI Integration
 
 #### Automated
 
-- [ ] 2.1 `npx tsc --noEmit` passes with zero errors
-- [ ] 2.2 `npm run lint` passes with no new errors
-- [ ] 2.3 `npm run build` passes
+- [x] 2.1 `npx tsc --noEmit` passes with zero errors — d2c9bef
+- [x] 2.2 `npm run lint` passes with no new errors — d2c9bef
+- [x] 2.3 `npm run build` passes — d2c9bef
 
 #### Manual
 
-- [ ] 2.4 Creator sees "Lock settlement" button; non-creators do not
-- [ ] 2.5 Creator locks → button label changes, banner appears with name and date, "Add expense" disabled
-- [ ] 2.6 Non-creator tab updates within ~1 second via Realtime on lock
-- [ ] 2.7 Creator unlocks → banner disappears, "Add expense" re-enabled; Realtime propagates
-- [ ] 2.8 AddExpenseSheet open when Realtime lock fires → sheet auto-closes, banner visible
-- [ ] 2.9 AddExpenseSheet submits to locked group → 423 inline error shown, sheet stays open
-- [ ] 2.10 `locked_at` date in banner matches lock time (YYYY-MM-DD)
-- [ ] 2.11 Non-creator cannot see or interact with the toggle button
+- [x] 2.4 Creator sees "Lock settlement" button; non-creators do not — d2c9bef
+- [x] 2.5 Creator locks → button label changes, banner appears with name and date, "Add expense" disabled — d2c9bef
+- [x] 2.6 Non-creator tab updates within ~1 second via Realtime on lock — 6a37450
+- [x] 2.7 Creator unlocks → banner disappears, "Add expense" re-enabled; Realtime propagates — 6a37450
+- [x] 2.8 AddExpenseSheet open when Realtime lock fires → sheet auto-closes, banner visible — 6a37450
+- [x] 2.9 AddExpenseSheet submits to locked group → 423 inline error shown, sheet stays open — 6a37450
+- [x] 2.10 `locked_at` date in banner matches lock time (YYYY-MM-DD) — d2c9bef
+- [x] 2.11 Non-creator cannot see or interact with the toggle button — d2c9bef

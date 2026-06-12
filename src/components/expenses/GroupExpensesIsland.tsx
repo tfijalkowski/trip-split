@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { BalancePanel } from "./BalancePanel";
 import { ExpenseTable } from "./ExpenseTable";
 import { AddExpenseSheet } from "./AddExpenseSheet";
+import { SettlementLockBanner } from "./SettlementLockBanner";
 
 let _supabase: ReturnType<typeof createBrowserClient> | null = null;
 function getClient() {
@@ -17,6 +18,10 @@ interface Props {
   initialBalances: MemberBalance[];
   members: GroupMember[];
   currentUserId: string;
+  isGroupLocked: boolean;
+  lockedAt: string | null;
+  isCreator: boolean;
+  creatorName: string | null;
 }
 
 export default function GroupExpensesIsland({
@@ -25,10 +30,16 @@ export default function GroupExpensesIsland({
   initialBalances,
   members,
   currentUserId,
+  isGroupLocked,
+  lockedAt,
+  isCreator,
+  creatorName,
 }: Props) {
   const [expenses, setExpenses] = useState(initialExpenses);
   const [balances, setBalances] = useState(initialBalances);
   const [sheetOpen, setSheetOpen] = useState(false);
+  const [groupLocked, setGroupLocked] = useState(isGroupLocked);
+  const [groupLockedAt, setGroupLockedAt] = useState(lockedAt);
 
   const refetch = useCallback(async () => {
     const client = getClient();
@@ -47,32 +58,86 @@ export default function GroupExpensesIsland({
   useEffect(() => {
     let mounted = true;
     const client = getClient();
-    const channel = client
-      .channel(`expenses:${groupId}`)
-      .on(
-        "postgres_changes",
-        { event: "*", schema: "public", table: "expenses", filter: `group_id=eq.${groupId}` },
-        (payload) => {
-          console.log("[Realtime event]", payload);
-          if (mounted) void refetch();
-        },
-      )
-      .subscribe((status, err) => {
-        if (import.meta.env.DEV) console.log("[Realtime]", status, err ?? "");
-        else if (err) console.error("[Realtime]", status, err);
-      });
+
+    type Channel = ReturnType<typeof client.channel>;
+    let expensesChannel: Channel | null = null;
+    let groupChannel: Channel | null = null;
+
+    void (async () => {
+      // Realtime channels are stamped with the current access token at .subscribe() time
+      // and the resulting realtime.subscription row's claims_role is fixed for the channel's
+      // lifetime. Wait for the user JWT before subscribing or RLS will drop every event.
+      const { data: sessionData } = await client.auth.getSession();
+      if (sessionData.session) void client.realtime.setAuth(sessionData.session.access_token);
+      // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+      if (!mounted) return;
+
+      expensesChannel = client
+        .channel(`expenses:${groupId}`)
+        .on(
+          "postgres_changes",
+          { event: "*", schema: "public", table: "expenses", filter: `group_id=eq.${groupId}` },
+          (payload) => {
+            console.log("[Realtime expenses]", payload.eventType);
+            if (mounted) void refetch();
+          },
+        )
+        .subscribe((status, err) => {
+          if (err) console.error("[Realtime expenses] subscribe", status, err);
+        });
+
+      groupChannel = client
+        .channel(`group:${groupId}`)
+        .on(
+          "postgres_changes",
+          { event: "*", schema: "public", table: "groups", filter: `id=eq.${groupId}` },
+          (payload) => {
+            console.log("[Realtime group]", payload.eventType);
+            const newRow = payload.new as { is_locked: boolean; locked_at: string | null };
+            setGroupLocked(newRow.is_locked);
+            setGroupLockedAt(newRow.locked_at);
+            if (newRow.is_locked && mounted) setSheetOpen(false);
+          },
+        )
+        .subscribe((status, err) => {
+          if (err) console.error("[Realtime group] subscribe", status, err);
+        });
+    })();
 
     return () => {
       mounted = false;
-      void client.removeChannel(channel);
+      if (expensesChannel) void client.removeChannel(expensesChannel);
+      if (groupChannel) void client.removeChannel(groupChannel);
     };
   }, [groupId, refetch]);
 
+  async function handleToggleLock() {
+    const res = await fetch(`/api/groups/${groupId}`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ is_locked: !groupLocked }),
+    });
+    if (res.ok) {
+      const data = (await res.json()) as { is_locked: boolean; locked_at: string | null };
+      setGroupLocked(data.is_locked);
+      setGroupLockedAt(data.locked_at ?? null);
+    } else {
+      console.error("[lock toggle] failed", res.status);
+    }
+  }
+
   return (
     <div className="space-y-4">
+      {groupLocked && <SettlementLockBanner lockedAt={groupLockedAt} creatorName={creatorName} />}
       <BalancePanel balances={balances} members={members} />
-      <div className="flex justify-end">
+      <div className="flex justify-end gap-2">
+        {isCreator && (
+          <Button variant="outline" onClick={handleToggleLock}>
+            {groupLocked ? "Unlock settlement" : "Lock settlement"}
+          </Button>
+        )}
         <Button
+          disabled={groupLocked}
           onClick={() => {
             setSheetOpen(true);
           }}

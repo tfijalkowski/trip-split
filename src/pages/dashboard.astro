@@ -12,6 +12,7 @@ const error = Astro.url.searchParams.get("error");
 const errorMessages: Record<string, string> = {
   invalid_invite: "That invite link is invalid or has expired.",
   join_failed: "Something went wrong joining the group. Please try again.",
+  group_locked: "This group's settlement is locked and is not accepting new members.",
 };
 ---
 

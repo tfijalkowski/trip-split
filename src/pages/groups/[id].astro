@@ -77,6 +77,10 @@ const initialExpenses = (expenseRows ?? []) as ExpenseWithParticipants[];
 const initialBalances = (balanceRows ?? []) as MemberBalance[];
 
 const inviteUrl = `${Astro.url.origin}/join/${group.invite_code}`;
+
+const isCreator = user.id === group.created_by;
+const creatorMember = members.find((m) => m.user_id === group.created_by);
+const creatorName = creatorMember?.display_name ?? creatorMember?.email ?? null;
 ---
 
 <Layout title={group.name}>
@@ -114,6 +118,10 @@ const inviteUrl = `${Astro.url.origin}/join/${group.invite_code}`;
         initialBalances={initialBalances}
         members={members}
         currentUserId={user.id}
+        isGroupLocked={group.is_locked}
+        lockedAt={group.locked_at ?? null}
+        isCreator={isCreator}
+        creatorName={creatorName}
         client:load
       />
     </div>
