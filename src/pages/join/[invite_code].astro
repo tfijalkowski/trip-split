@@ -22,6 +22,9 @@ if (error) {
   if (error.message.includes("invalid_invite_code")) {
     return Astro.redirect("/dashboard?error=invalid_invite");
   }
+  if (error.message.includes("group_is_locked")) {
+    return Astro.redirect("/dashboard?error=group_locked");
+  }
   return Astro.redirect("/dashboard?error=join_failed");
 }
 

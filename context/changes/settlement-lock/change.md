@@ -1,9 +1,9 @@
 ---
 change_id: settlement-lock
 roadmap_id: S-03
-status: plan_reviewed
+status: implementing
 created: 2026-06-11
-updated: 2026-06-11
+updated: 2026-06-12
 ---
 
 # S-03: Zamknięcie i otwarcie rozliczenia

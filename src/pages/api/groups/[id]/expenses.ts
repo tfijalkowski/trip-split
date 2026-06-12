@@ -54,6 +54,15 @@ export const POST: APIRoute = async (context) => {
     });
   }
 
+  const { data: groupRow } = await supabase.from("groups").select("is_locked").eq("id", groupId).single();
+
+  if (groupRow?.is_locked === true) {
+    return new Response(JSON.stringify({ error: "Group settlement is locked" }), {
+      status: 423,
+      headers: { "Content-Type": "application/json" },
+    });
+  }
+
   let body: CreateExpenseBody;
   try {
     body = (await context.request.json()) as CreateExpenseBody;

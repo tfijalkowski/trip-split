@@ -358,21 +358,21 @@ Run `supabase migration new settlement_lock` to create the timestamped file, pas
 
 #### Automated
 
-- [ ] 1.1 `supabase db push` applies migration with no errors
-- [ ] 1.2 `npx tsc --noEmit` passes with zero errors
-- [ ] 1.3 `npm run build` passes
+- [x] 1.1 `supabase db push` applies migration with no errors
+- [x] 1.2 `npx tsc --noEmit` passes with zero errors
+- [x] 1.3 `npm run build` passes
 
 #### Manual
 
-- [ ] 1.4 `locked_at` column present in `groups`; existing rows have `locked_at = null`
-- [ ] 1.5 `PATCH /api/groups/:id` with creator auth + `{ is_locked: true }` → `200`, `locked_at` set
-- [ ] 1.6 `PATCH /api/groups/:id` with creator auth + `{ is_locked: false }` → `200`, `locked_at = null`
-- [ ] 1.7 `PATCH /api/groups/:id` without auth → `401`
-- [ ] 1.8 `PATCH /api/groups/:id` from non-creator → `403`
-- [ ] 1.9 `POST /api/groups/:id/expenses` on locked group → `423`
-- [ ] 1.10 `POST /api/groups/:id/expenses` on unlocked group → `201` (no regression)
-- [ ] 1.11 Invite link for a locked group → `/dashboard?error=group_locked`
-- [ ] 1.12 Invite link for an unlocked group → join succeeds (no regression)
+- [x] 1.4 `locked_at` column present in `groups`; existing rows have `locked_at = null`
+- [x] 1.5 `PATCH /api/groups/:id` with creator auth + `{ is_locked: true }` → `200`, `locked_at` set
+- [x] 1.6 `PATCH /api/groups/:id` with creator auth + `{ is_locked: false }` → `200`, `locked_at = null`
+- [x] 1.7 `PATCH /api/groups/:id` without auth → `401`
+- [x] 1.8 `PATCH /api/groups/:id` from non-creator → `403`
+- [x] 1.9 `POST /api/groups/:id/expenses` on locked group → `423`
+- [x] 1.10 `POST /api/groups/:id/expenses` on unlocked group → `201` (no regression)
+- [x] 1.11 Invite link for a locked group → `/dashboard?error=group_locked`
+- [x] 1.12 Invite link for an unlocked group → join succeeds (no regression)
 
 ### Phase 2: UI Integration
 
