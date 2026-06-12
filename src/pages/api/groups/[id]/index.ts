@@ -54,7 +54,7 @@ export const PATCH: APIRoute = async (context) => {
     .eq("id", groupId)
     .single();
 
-  if (selectError || !groupRow) {
+  if (selectError) {
     return new Response(JSON.stringify({ error: "Group not found" }), {
       status: 404,
       headers: { "Content-Type": "application/json" },
@@ -78,8 +78,8 @@ export const PATCH: APIRoute = async (context) => {
     .select("is_locked, locked_at")
     .single();
 
-  if (updateError || !updated) {
-    return new Response(JSON.stringify({ error: updateError?.message ?? "Failed to update group" }), {
+  if (updateError) {
+    return new Response(JSON.stringify({ error: updateError.message }), {
       status: 500,
       headers: { "Content-Type": "application/json" },
     });

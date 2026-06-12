@@ -124,6 +124,11 @@ export function AddExpenseSheet({ open, onOpenChange, groupId, members, currentU
         }),
       });
 
+      if (res.status === 423) {
+        setServerError("Settlement was locked while you were filling this out");
+        return;
+      }
+
       if (!res.ok) {
         const body = (await res.json()) as { error?: string };
         setServerError(body.error ?? "Failed to create expense");
