@@ -251,10 +251,10 @@ No database migration required. The `profiles` table, `display_name` column, and
 
 #### Manual
 
-- [x] 1.3 PATCH with valid body updates `display_name` in `profiles` table
-- [x] 1.4 Empty/whitespace-only body returns 400
-- [x] 1.5 Name longer than 50 chars returns 400
-- [x] 1.6 Request with no session cookie returns 401
+- [x] 1.3 PATCH with valid body updates `display_name` in `profiles` table — 97df3aa
+- [x] 1.4 Empty/whitespace-only body returns 400 — 97df3aa
+- [x] 1.5 Name longer than 50 chars returns 400 — 97df3aa
+- [x] 1.6 Request with no session cookie returns 401 — 97df3aa
 
 ### Phase 2: Profile Page + React Island
 
@@ -265,12 +265,12 @@ No database migration required. The `profiles` table, `display_name` column, and
 
 #### Manual
 
-- [x] 2.3 `/profile` without session redirects to sign-in
-- [x] 2.4 Current display name pre-fills (or placeholder if null)
-- [x] 2.5 Valid save shows "Name saved" and persists on page reload
-- [x] 2.6 Blank input shows inline error; no network request fires
-- [x] 2.7 Name longer than 50 chars shows inline error
-- [x] 2.8 Updated name appears in group views on next page load
+- [x] 2.3 `/profile` without session redirects to sign-in — 97df3aa
+- [x] 2.4 Current display name pre-fills (or placeholder if null) — 97df3aa
+- [x] 2.5 Valid save shows "Name saved" and persists on page reload — 97df3aa
+- [x] 2.6 Blank input shows inline error; no network request fires — 97df3aa
+- [x] 2.7 Name longer than 50 chars shows inline error — 97df3aa
+- [x] 2.8 Updated name appears in group views on next page load — 97df3aa
 
 ### Phase 3: Dashboard Navigation Link
 
@@ -280,5 +280,5 @@ No database migration required. The `profiles` table, `display_name` column, and
 
 #### Manual
 
-- [x] 3.2 "Profile" link visible on dashboard
-- [x] 3.3 Link navigates to `/profile`
+- [x] 3.2 "Profile" link visible on dashboard — 97df3aa
+- [x] 3.3 Link navigates to `/profile` — 97df3aa
