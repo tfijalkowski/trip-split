@@ -276,9 +276,9 @@ No database migration required. The `profiles` table, `display_name` column, and
 
 #### Automated
 
-- [x] 3.1 Compilation and linting pass
+- [x] 3.1 Compilation and linting pass — ac44d30
 
 #### Manual
 
-- [x] 3.2 "Profile" link visible on dashboard
-- [x] 3.3 Link navigates to `/profile`
+- [x] 3.2 "Profile" link visible on dashboard — ac44d30
+- [x] 3.3 Link navigates to `/profile` — ac44d30
