@@ -1,0 +1,42 @@
+---
+import Layout from "@/layouts/Layout.astro";
+import ProfileForm from "@/components/profile/ProfileForm";
+import type { UserProfile } from "@/types";
+
+const { supabase, user } = Astro.locals;
+
+if (!supabase || !user) {
+  return Astro.redirect("/auth/signin");
+}
+
+const { data: profile } = await supabase
+  .from("profiles")
+  .select("id, email, display_name")
+  .eq("id", user.id)
+  .single<UserProfile>();
+
+if (!profile) {
+  return Astro.redirect("/auth/signin");
+}
+---
+
+<Layout title="Profile">
+  <div class="bg-cosmic flex min-h-screen flex-col items-center p-8">
+    <div class="w-full max-w-2xl">
+      <div class="mb-8 flex items-center justify-between">
+        <h1 class="bg-gradient-to-r from-blue-200 to-purple-200 bg-clip-text text-3xl font-bold text-transparent">
+          Profile
+        </h1>
+        <a
+          href="/dashboard"
+          class="rounded-lg border border-white/20 bg-white/10 px-4 py-2 text-sm text-white transition-colors hover:bg-white/20"
+        >
+          Back to dashboard
+        </a>
+      </div>
+      <div class="rounded-xl border border-white/10 bg-white/10 p-6 backdrop-blur-xl">
+        <ProfileForm client:load displayName={profile.display_name} email={profile.email} />
+      </div>
+    </div>
+  </div>
+</Layout>

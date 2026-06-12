@@ -246,31 +246,31 @@ No database migration required. The `profiles` table, `display_name` column, and
 
 #### Automated
 
-- [x] 1.1 TypeScript compilation passes: `npx tsc --noEmit`
-- [x] 1.2 Linting passes: `npx eslint src/pages/api/users/profile.ts src/types.ts`
+- [x] 1.1 TypeScript compilation passes: `npx tsc --noEmit` — a14a3e5
+- [x] 1.2 Linting passes: `npx eslint src/pages/api/users/profile.ts src/types.ts` — a14a3e5
 
 #### Manual
 
-- [x] 1.3 PATCH with valid body updates `display_name` in `profiles` table
-- [x] 1.4 Empty/whitespace-only body returns 400
-- [x] 1.5 Name longer than 50 chars returns 400
-- [x] 1.6 Request with no session cookie returns 401
+- [x] 1.3 PATCH with valid body updates `display_name` in `profiles` table — a14a3e5
+- [x] 1.4 Empty/whitespace-only body returns 400 — a14a3e5
+- [x] 1.5 Name longer than 50 chars returns 400 — a14a3e5
+- [x] 1.6 Request with no session cookie returns 401 — a14a3e5
 
 ### Phase 2: Profile Page + React Island
 
 #### Automated
 
-- [ ] 2.1 TypeScript compilation passes: `npx tsc --noEmit`
-- [ ] 2.2 Linting passes for new files and modified middleware
+- [x] 2.1 TypeScript compilation passes: `npx tsc --noEmit`
+- [x] 2.2 Linting passes for new files and modified middleware
 
 #### Manual
 
-- [ ] 2.3 `/profile` without session redirects to sign-in
-- [ ] 2.4 Current display name pre-fills (or placeholder if null)
-- [ ] 2.5 Valid save shows "Name saved" and persists on page reload
-- [ ] 2.6 Blank input shows inline error; no network request fires
-- [ ] 2.7 Name longer than 50 chars shows inline error
-- [ ] 2.8 Updated name appears in group views on next page load
+- [x] 2.3 `/profile` without session redirects to sign-in
+- [x] 2.4 Current display name pre-fills (or placeholder if null)
+- [x] 2.5 Valid save shows "Name saved" and persists on page reload
+- [x] 2.6 Blank input shows inline error; no network request fires
+- [x] 2.7 Name longer than 50 chars shows inline error
+- [x] 2.8 Updated name appears in group views on next page load
 
 ### Phase 3: Dashboard Navigation Link
 
