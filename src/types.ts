@@ -5,6 +5,7 @@ export interface Group {
   invite_code: string;
   created_by: string;
   is_locked: boolean;
+  locked_at: string | null;
   created_at: string;
 }
 

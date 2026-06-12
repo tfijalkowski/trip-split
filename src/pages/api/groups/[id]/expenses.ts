@@ -42,7 +42,7 @@ export const POST: APIRoute = async (context) => {
 
   const { data: membership } = await supabase
     .from("group_members")
-    .select("id")
+    .select("id, groups!inner(is_locked)")
     .eq("group_id", groupId)
     .eq("user_id", user.id)
     .maybeSingle();
@@ -50,6 +50,13 @@ export const POST: APIRoute = async (context) => {
   if (!membership) {
     return new Response(JSON.stringify({ error: "Forbidden" }), {
       status: 403,
+      headers: { "Content-Type": "application/json" },
+    });
+  }
+
+  if ((membership.groups as unknown as { is_locked: boolean }).is_locked) {
+    return new Response(JSON.stringify({ error: "Group settlement is locked" }), {
+      status: 423,
       headers: { "Content-Type": "application/json" },
     });
   }
