@@ -59,43 +59,54 @@ export default function GroupExpensesIsland({
     let mounted = true;
     const client = getClient();
 
-    const channel = client
-      .channel(`expenses:${groupId}`)
-      .on(
-        "postgres_changes",
-        { event: "*", schema: "public", table: "expenses", filter: `group_id=eq.${groupId}` },
-        (payload) => {
-          console.log("[Realtime event]", payload);
-          if (mounted) void refetch();
-        },
-      )
-      .subscribe((status, err) => {
-        if (import.meta.env.DEV) console.log("[Realtime]", status, err ?? "");
-        else if (err) console.error("[Realtime]", status, err);
-      });
+    type Channel = ReturnType<typeof client.channel>;
+    let expensesChannel: Channel | null = null;
+    let groupChannel: Channel | null = null;
 
-    const groupChannel = client
-      .channel(`group:${groupId}`)
-      .on(
-        "postgres_changes",
-        { event: "UPDATE", schema: "public", table: "groups", filter: `id=eq.${groupId}` },
-        (payload) => {
-          const newLocked = payload.new.is_locked as boolean;
-          const newLockedAt = payload.new.locked_at as string | null;
-          setGroupLocked(newLocked);
-          setGroupLockedAt(newLockedAt);
-          if (newLocked && mounted) setSheetOpen(false);
-        },
-      )
-      .subscribe((status, err) => {
-        if (import.meta.env.DEV) console.log("[Realtime group]", status, err ?? "");
-        else if (err) console.error("[Realtime group]", status, err);
-      });
+    void (async () => {
+      // Realtime channels are stamped with the current access token at .subscribe() time
+      // and the resulting realtime.subscription row's claims_role is fixed for the channel's
+      // lifetime. Wait for the user JWT before subscribing or RLS will drop every event.
+      const { data: sessionData } = await client.auth.getSession();
+      if (sessionData.session) client.realtime.setAuth(sessionData.session.access_token);
+      if (!mounted) return;
+
+      expensesChannel = client
+        .channel(`expenses:${groupId}`)
+        .on(
+          "postgres_changes",
+          { event: "*", schema: "public", table: "expenses", filter: `group_id=eq.${groupId}` },
+          (payload) => {
+            console.log("[Realtime expenses]", payload.eventType);
+            if (mounted) void refetch();
+          },
+        )
+        .subscribe((status, err) => {
+          if (err) console.error("[Realtime expenses] subscribe", status, err);
+        });
+
+      groupChannel = client
+        .channel(`group:${groupId}`)
+        .on(
+          "postgres_changes",
+          { event: "*", schema: "public", table: "groups", filter: `id=eq.${groupId}` },
+          (payload) => {
+            console.log("[Realtime group]", payload.eventType);
+            const newRow = payload.new as { is_locked: boolean; locked_at: string | null };
+            setGroupLocked(newRow.is_locked);
+            setGroupLockedAt(newRow.locked_at);
+            if (newRow.is_locked && mounted) setSheetOpen(false);
+          },
+        )
+        .subscribe((status, err) => {
+          if (err) console.error("[Realtime group] subscribe", status, err);
+        });
+    })();
 
     return () => {
       mounted = false;
-      void client.removeChannel(channel);
-      void client.removeChannel(groupChannel);
+      if (expensesChannel) void client.removeChannel(expensesChannel);
+      if (groupChannel) void client.removeChannel(groupChannel);
     };
   }, [groupId, refetch]);
 

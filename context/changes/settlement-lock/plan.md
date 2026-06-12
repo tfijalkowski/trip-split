@@ -371,8 +371,8 @@ Run `supabase migration new settlement_lock` to create the timestamped file, pas
 - [x] 1.8 `PATCH /api/groups/:id` from non-creator → `403` — 21c56bc
 - [x] 1.9 `POST /api/groups/:id/expenses` on locked group → `423` — 21c56bc
 - [x] 1.10 `POST /api/groups/:id/expenses` on unlocked group → `201` (no regression) — 21c56bc
-- [x] 1.11 Invite link for a locked group → `/dashboard?error=group_locked`
-- [x] 1.12 Invite link for an unlocked group → join succeeds (no regression)
+- [x] 1.11 Invite link for a locked group → `/dashboard?error=group_locked` — c4a1596
+- [x] 1.12 Invite link for an unlocked group → join succeeds (no regression) — c4a1596
 
 ### Phase 2: UI Integration
 
@@ -386,9 +386,9 @@ Run `supabase migration new settlement_lock` to create the timestamped file, pas
 
 - [x] 2.4 Creator sees "Lock settlement" button; non-creators do not — d2c9bef
 - [x] 2.5 Creator locks → button label changes, banner appears with name and date, "Add expense" disabled — d2c9bef
-- [ ] 2.6 Non-creator tab updates within ~1 second via Realtime on lock
-- [ ] 2.7 Creator unlocks → banner disappears, "Add expense" re-enabled; Realtime propagates
-- [ ] 2.8 AddExpenseSheet open when Realtime lock fires → sheet auto-closes, banner visible
-- [ ] 2.9 AddExpenseSheet submits to locked group → 423 inline error shown, sheet stays open
+- [x] 2.6 Non-creator tab updates within ~1 second via Realtime on lock
+- [x] 2.7 Creator unlocks → banner disappears, "Add expense" re-enabled; Realtime propagates
+- [x] 2.8 AddExpenseSheet open when Realtime lock fires → sheet auto-closes, banner visible
+- [x] 2.9 AddExpenseSheet submits to locked group → 423 inline error shown, sheet stays open
 - [x] 2.10 `locked_at` date in banner matches lock time (YYYY-MM-DD) — d2c9bef
 - [x] 2.11 Non-creator cannot see or interact with the toggle button — d2c9bef
