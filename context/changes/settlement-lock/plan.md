@@ -378,17 +378,17 @@ Run `supabase migration new settlement_lock` to create the timestamped file, pas
 
 #### Automated
 
-- [x] 2.1 `npx tsc --noEmit` passes with zero errors
-- [x] 2.2 `npm run lint` passes with no new errors
-- [x] 2.3 `npm run build` passes
+- [x] 2.1 `npx tsc --noEmit` passes with zero errors — d2c9bef
+- [x] 2.2 `npm run lint` passes with no new errors — d2c9bef
+- [x] 2.3 `npm run build` passes — d2c9bef
 
 #### Manual
 
-- [x] 2.4 Creator sees "Lock settlement" button; non-creators do not
-- [x] 2.5 Creator locks → button label changes, banner appears with name and date, "Add expense" disabled
+- [x] 2.4 Creator sees "Lock settlement" button; non-creators do not — d2c9bef
+- [x] 2.5 Creator locks → button label changes, banner appears with name and date, "Add expense" disabled — d2c9bef
 - [ ] 2.6 Non-creator tab updates within ~1 second via Realtime on lock
 - [ ] 2.7 Creator unlocks → banner disappears, "Add expense" re-enabled; Realtime propagates
 - [ ] 2.8 AddExpenseSheet open when Realtime lock fires → sheet auto-closes, banner visible
 - [ ] 2.9 AddExpenseSheet submits to locked group → 423 inline error shown, sheet stays open
-- [x] 2.10 `locked_at` date in banner matches lock time (YYYY-MM-DD)
-- [x] 2.11 Non-creator cannot see or interact with the toggle button
+- [x] 2.10 `locked_at` date in banner matches lock time (YYYY-MM-DD) — d2c9bef
+- [x] 2.11 Non-creator cannot see or interact with the toggle button — d2c9bef
