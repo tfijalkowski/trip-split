@@ -260,25 +260,25 @@ No database migration required. The `profiles` table, `display_name` column, and
 
 #### Automated
 
-- [x] 2.1 TypeScript compilation passes: `npx tsc --noEmit`
-- [x] 2.2 Linting passes for new files and modified middleware
+- [x] 2.1 TypeScript compilation passes: `npx tsc --noEmit` — 55b4469
+- [x] 2.2 Linting passes for new files and modified middleware — 55b4469
 
 #### Manual
 
-- [x] 2.3 `/profile` without session redirects to sign-in
-- [x] 2.4 Current display name pre-fills (or placeholder if null)
-- [x] 2.5 Valid save shows "Name saved" and persists on page reload
-- [x] 2.6 Blank input shows inline error; no network request fires
-- [x] 2.7 Name longer than 50 chars shows inline error
-- [x] 2.8 Updated name appears in group views on next page load
+- [x] 2.3 `/profile` without session redirects to sign-in — 55b4469
+- [x] 2.4 Current display name pre-fills (or placeholder if null) — 55b4469
+- [x] 2.5 Valid save shows "Name saved" and persists on page reload — 55b4469
+- [x] 2.6 Blank input shows inline error; no network request fires — 55b4469
+- [x] 2.7 Name longer than 50 chars shows inline error — 55b4469
+- [x] 2.8 Updated name appears in group views on next page load — 55b4469
 
 ### Phase 3: Dashboard Navigation Link
 
 #### Automated
 
-- [ ] 3.1 Compilation and linting pass
+- [x] 3.1 Compilation and linting pass
 
 #### Manual
 
-- [ ] 3.2 "Profile" link visible on dashboard
-- [ ] 3.3 Link navigates to `/profile`
+- [x] 3.2 "Profile" link visible on dashboard
+- [x] 3.3 Link navigates to `/profile`
