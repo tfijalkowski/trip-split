@@ -246,15 +246,15 @@ No database migration required. The `profiles` table, `display_name` column, and
 
 #### Automated
 
-- [ ] 1.1 TypeScript compilation passes: `npx tsc --noEmit`
-- [ ] 1.2 Linting passes: `npx eslint src/pages/api/users/profile.ts src/types.ts`
+- [x] 1.1 TypeScript compilation passes: `npx tsc --noEmit`
+- [x] 1.2 Linting passes: `npx eslint src/pages/api/users/profile.ts src/types.ts`
 
 #### Manual
 
-- [ ] 1.3 PATCH with valid body updates `display_name` in `profiles` table
-- [ ] 1.4 Empty/whitespace-only body returns 400
-- [ ] 1.5 Name longer than 50 chars returns 400
-- [ ] 1.6 Request with no session cookie returns 401
+- [x] 1.3 PATCH with valid body updates `display_name` in `profiles` table
+- [x] 1.4 Empty/whitespace-only body returns 400
+- [x] 1.5 Name longer than 50 chars returns 400
+- [x] 1.6 Request with no session cookie returns 401
 
 ### Phase 2: Profile Page + React Island
 
