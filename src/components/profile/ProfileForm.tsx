@@ -25,6 +25,7 @@ export default function ProfileForm({ displayName, email }: Props) {
       return;
     }
     setError(null);
+    setSuccess(false);
     setLoading(true);
     try {
       const res = await fetch("/api/users/profile", {

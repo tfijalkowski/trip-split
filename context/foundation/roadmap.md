@@ -174,8 +174,6 @@ Fundacje poniżej zakładają, że wymienione elementy są obecne i NIE scaffold
 ## Open Roadmap Questions
 
 1. **Granularna kontrola dostępu do grupy** — jeden link zaproszenia obsługuje całą grupę; nie ma możliwości usunięcia konkretnego uczestnika bez usunięcia grupy. Owner: użytkownik. Block: nie (ograniczenie odnotowane w PRD FR-004; delegacja → v2). Dotyczy: roadmap-wide.
-2. **Maksymalna długość nazwy wyświetlanej** — reguła walidacji FR-018 wymaga tej liczby przed implementacją; sugerowany domyślny: 50 znaków. Owner: użytkownik. Block: S-05 (tak — reguła walidacji niekompletna bez tej decyzji).
-3. **Lokalizacja wpisu nawigacyjnego do strony profilu** — czy link do profilu pojawia się tylko na dashboardzie, czy jako globalny element UI dostępny z każdej strony? Owner: użytkownik. Block: nie (implementacja może ruszyć z rozsądnym domyślnym; wymagane potwierdzenie przed finalizacją UI). Dotyczy: S-05.
 
 ## Parked
 

@@ -52,11 +52,22 @@ export const PATCH: APIRoute = async (context) => {
       });
     }
 
-    const { error } = await supabase.from("profiles").update({ display_name: trimmed }).eq("id", user.id);
+    const { data: rows, error } = await supabase
+      .from("profiles")
+      .update({ display_name: trimmed })
+      .eq("id", user.id)
+      .select("display_name");
 
     if (error) {
       return new Response(JSON.stringify({ error: "Failed to update display name" }), {
         status: 500,
+        headers: { "Content-Type": "application/json" },
+      });
+    }
+
+    if (!rows.length) {
+      return new Response(JSON.stringify({ error: "Profile not found" }), {
+        status: 404,
         headers: { "Content-Type": "application/json" },
       });
     }

@@ -62,7 +62,9 @@ const errorMessages: Record<string, string> = {
                   class="block rounded-xl border border-white/10 bg-white/10 px-5 py-4 text-white backdrop-blur-xl transition-colors hover:bg-white/20"
                 >
                   <span class="font-semibold">{g.name}</span>
-                  <span class="ml-3 text-xs text-white/50">{new Date(g.created_at).toLocaleDateString()}</span>
+                  <span class="ml-3 text-xs text-white/50">
+                    {new Date(g.created_at as string).toLocaleDateString()}
+                  </span>
                 </a>
               </li>
             ))}
