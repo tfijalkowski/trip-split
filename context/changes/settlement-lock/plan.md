@@ -371,8 +371,8 @@ Run `supabase migration new settlement_lock` to create the timestamped file, pas
 - [x] 1.8 `PATCH /api/groups/:id` from non-creator → `403` — 21c56bc
 - [x] 1.9 `POST /api/groups/:id/expenses` on locked group → `423` — 21c56bc
 - [x] 1.10 `POST /api/groups/:id/expenses` on unlocked group → `201` (no regression) — 21c56bc
-- [ ] 1.11 Invite link for a locked group → `/dashboard?error=group_locked`
-- [ ] 1.12 Invite link for an unlocked group → join succeeds (no regression)
+- [x] 1.11 Invite link for a locked group → `/dashboard?error=group_locked`
+- [x] 1.12 Invite link for an unlocked group → join succeeds (no regression)
 
 ### Phase 2: UI Integration
 
