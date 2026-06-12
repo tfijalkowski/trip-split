@@ -1,7 +1,7 @@
 ---
 change_id: settlement-lock
 roadmap_id: S-03
-status: implemented
+status: impl_reviewed
 created: 2026-06-11
 updated: 2026-06-12
 ---

@@ -129,7 +129,7 @@ Fundacje poniżej zakładają, że wymienione elementy są obecne i NIE scaffold
 - **Blockers:** —
 - **Unknowns:** —
 - **Risk:** Status zamknięcia musi być wymuszony po stronie serwera, nie tylko w UI — w przeciwnym razie uczestnik może obejść blokadę przez bezpośrednie wywołanie API. Mitygacja: każdy endpoint CRUD wydatków musi sprawdzać `group.status` przed wykonaniem operacji.
-- **Status:** proposed
+- **Status:** done
 
 ### S-04: Edycja i usuwanie wydatku
 
@@ -166,7 +166,7 @@ Fundacje poniżej zakładają, że wymienione elementy są obecne i NIE scaffold
 | F-02       | db-schema-rls        | [F-02] Schema DB + polityki RLS + Realtime              | —                     | ✅ Done                          |
 | S-01       | group-join-flow      | [S-01] Tworzenie grupy, link zaproszenia, dołączenie    | —                     | ✅ Done — d548edc                |
 | S-02       | expense-balance-live | [S-02] Dodawanie wydatku z podziałem + salda na żywo ⭐  | —                     | ✅ Done — 2f26ae0                |
-| S-03       | settlement-lock      | [S-03] Zamknięcie i otwarcie rozliczenia                | tak                   | Must-have; przed S-04           |
+| S-03       | settlement-lock      | [S-03] Zamknięcie i otwarcie rozliczenia                | —                     | ✅ Done                          |
 | S-04       | expense-edit-delete         | [S-04] Edycja i usuwanie własnego wydatku                         | tak   | Nice-to-have; po S-03                                              |
 | S-05       | user-profile-display-name   | [S-05] Strona profilu — zmiana nazwy wyświetlanej                 | tak   | Plan reviewed — gotowe do `/10x-implement`                        |
 

@@ -8,10 +8,10 @@ export function createBrowserClient() {
   // to the anon key and postgres_changes channels register with claims_role=anon.
   // RLS on protected tables then silently drops every event. Sync the user JWT.
   void client.auth.getSession().then(({ data }) => {
-    if (data.session) client.realtime.setAuth(data.session.access_token);
+    if (data.session) void client.realtime.setAuth(data.session.access_token);
   });
   client.auth.onAuthStateChange((_event, session) => {
-    client.realtime.setAuth(session?.access_token ?? null);
+    void client.realtime.setAuth(session?.access_token ?? null);
   });
 
   return client;

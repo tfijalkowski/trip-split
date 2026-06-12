@@ -68,7 +68,8 @@ export default function GroupExpensesIsland({
       // and the resulting realtime.subscription row's claims_role is fixed for the channel's
       // lifetime. Wait for the user JWT before subscribing or RLS will drop every event.
       const { data: sessionData } = await client.auth.getSession();
-      if (sessionData.session) client.realtime.setAuth(sessionData.session.access_token);
+      if (sessionData.session) void client.realtime.setAuth(sessionData.session.access_token);
+      // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
       if (!mounted) return;
 
       expensesChannel = client

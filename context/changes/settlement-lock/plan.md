@@ -338,6 +338,14 @@ The `is_locked` check in the POST expenses endpoint adds one extra Supabase quer
 
 Run `supabase migration new settlement_lock` to create the timestamped file, paste three SQL statements in order: `ALTER TABLE` (adds `locked_at`), `ALTER PUBLICATION` (adds `groups` to Realtime), and `CREATE OR REPLACE FUNCTION join_group` (adds `is_locked` guard). Apply with `supabase db push`. Existing rows will have `locked_at = NULL` — no backfill needed.
 
+## Addendum — Unplanned but necessary files
+
+The following files were created/modified during implementation but were not listed in the plan. All are direct technical requirements of the planned work:
+
+- `src/lib/supabase.browser.ts` (new) — browser-side Supabase client factory extracted from `GroupExpensesIsland.tsx`. Required to set the user JWT on the Realtime client before subscribing; without it, `postgres_changes` channels register with `claims_role=anon` and RLS silently drops every event.
+- `supabase/migrations/20260612151059_groups_replica_identity_full.sql` (new) — `ALTER TABLE public.groups REPLICA IDENTITY FULL`. Required so that Supabase Realtime sends full row data in `payload.new` on UPDATE events. Without it the group channel callback receives an empty payload. Mirrors `20260610220000_expenses_replica_identity_full.sql`.
+- `src/pages/dashboard.astro` (modified) — Added `group_locked` to the `errorMessages` map. Required for the `/dashboard?error=group_locked` redirect (Phase 1, Change 6) to display a human-readable message rather than a raw query-string key.
+
 ## References
 
 - S-02 plan (Realtime pattern): `context/changes/expense-balance-live/plan.md`
