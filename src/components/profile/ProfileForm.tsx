@@ -33,9 +33,10 @@ export default function ProfileForm({ displayName, email }: Props) {
         body: JSON.stringify({ display_name: trimmed }),
       });
       if (res.ok) {
+        const data = (await res.json()) as { display_name?: string };
         setSuccess(true);
         setError(null);
-        setValue(trimmed);
+        setValue(data.display_name ?? trimmed);
       } else {
         let message = "Something went wrong. Please try again.";
         try {

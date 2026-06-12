@@ -37,7 +37,7 @@ export const PATCH: APIRoute = async (context) => {
     const { display_name } = body;
 
     if (typeof display_name !== "string") {
-      return new Response(JSON.stringify({ error: "Display name must be between 1 and 50 characters." }), {
+      return new Response(JSON.stringify({ error: "display_name is required" }), {
         status: 400,
         headers: { "Content-Type": "application/json" },
       });
@@ -52,12 +52,7 @@ export const PATCH: APIRoute = async (context) => {
       });
     }
 
-    const { error } = await supabase
-      .from("profiles")
-      .update({ display_name: trimmed })
-      .eq("id", user.id)
-      .select("display_name")
-      .single();
+    const { error } = await supabase.from("profiles").update({ display_name: trimmed }).eq("id", user.id);
 
     if (error) {
       return new Response(JSON.stringify({ error: "Failed to update display name" }), {

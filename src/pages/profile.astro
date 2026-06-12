@@ -1,4 +1,6 @@
 ---
+export const prerender = false;
+
 import Layout from "@/layouts/Layout.astro";
 import ProfileForm from "@/components/profile/ProfileForm";
 import type { UserProfile } from "@/types";
@@ -9,14 +11,14 @@ if (!supabase || !user) {
   return Astro.redirect("/auth/signin");
 }
 
-const { data: profile } = await supabase
+const { data: profile, error: profileError } = await supabase
   .from("profiles")
   .select("id, email, display_name")
   .eq("id", user.id)
   .single<UserProfile>();
 
-if (!profile) {
-  return Astro.redirect("/auth/signin");
+if (profileError) {
+  return Astro.redirect("/dashboard?error=load_failed");
 }
 ---
 

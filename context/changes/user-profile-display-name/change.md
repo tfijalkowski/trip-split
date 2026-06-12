@@ -1,6 +1,6 @@
 ---
 change_id: user-profile-display-name
-status: implemented
+status: impl_reviewed
 created: 2026-06-11
 updated: 2026-06-12
 plan_reviewed: 2026-06-11
