@@ -246,39 +246,39 @@ No database migration required. The `profiles` table, `display_name` column, and
 
 #### Automated
 
-- [ ] 1.1 TypeScript compilation passes: `npx tsc --noEmit`
-- [ ] 1.2 Linting passes: `npx eslint src/pages/api/users/profile.ts src/types.ts`
+- [x] 1.1 TypeScript compilation passes: `npx tsc --noEmit` — a14a3e5
+- [x] 1.2 Linting passes: `npx eslint src/pages/api/users/profile.ts src/types.ts` — a14a3e5
 
 #### Manual
 
-- [ ] 1.3 PATCH with valid body updates `display_name` in `profiles` table
-- [ ] 1.4 Empty/whitespace-only body returns 400
-- [ ] 1.5 Name longer than 50 chars returns 400
-- [ ] 1.6 Request with no session cookie returns 401
+- [x] 1.3 PATCH with valid body updates `display_name` in `profiles` table — 97df3aa
+- [x] 1.4 Empty/whitespace-only body returns 400 — 97df3aa
+- [x] 1.5 Name longer than 50 chars returns 400 — 97df3aa
+- [x] 1.6 Request with no session cookie returns 401 — 97df3aa
 
 ### Phase 2: Profile Page + React Island
 
 #### Automated
 
-- [ ] 2.1 TypeScript compilation passes: `npx tsc --noEmit`
-- [ ] 2.2 Linting passes for new files and modified middleware
+- [x] 2.1 TypeScript compilation passes: `npx tsc --noEmit` — 55b4469
+- [x] 2.2 Linting passes for new files and modified middleware — 55b4469
 
 #### Manual
 
-- [ ] 2.3 `/profile` without session redirects to sign-in
-- [ ] 2.4 Current display name pre-fills (or placeholder if null)
-- [ ] 2.5 Valid save shows "Name saved" and persists on page reload
-- [ ] 2.6 Blank input shows inline error; no network request fires
-- [ ] 2.7 Name longer than 50 chars shows inline error
-- [ ] 2.8 Updated name appears in group views on next page load
+- [x] 2.3 `/profile` without session redirects to sign-in — 97df3aa
+- [x] 2.4 Current display name pre-fills (or placeholder if null) — 97df3aa
+- [x] 2.5 Valid save shows "Name saved" and persists on page reload — 97df3aa
+- [x] 2.6 Blank input shows inline error; no network request fires — 97df3aa
+- [x] 2.7 Name longer than 50 chars shows inline error — 97df3aa
+- [x] 2.8 Updated name appears in group views on next page load — 97df3aa
 
 ### Phase 3: Dashboard Navigation Link
 
 #### Automated
 
-- [ ] 3.1 Compilation and linting pass
+- [x] 3.1 Compilation and linting pass — ac44d30
 
 #### Manual
 
-- [ ] 3.2 "Profile" link visible on dashboard
-- [ ] 3.3 Link navigates to `/profile`
+- [x] 3.2 "Profile" link visible on dashboard — 97df3aa
+- [x] 3.3 Link navigates to `/profile` — 97df3aa

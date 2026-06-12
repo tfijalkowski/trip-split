@@ -4,7 +4,7 @@
 version: 1
 status: draft
 created: 2026-05-26
-updated: 2026-06-11
+updated: 2026-06-12
 prd_version: 4
 main_goal: speed
 top_blocker: capacity
@@ -36,7 +36,7 @@ Manualne rozliczanie wydatków po wyjeździe wakacyjnym to Excel + WhatsApp — 
 | S-02 | expense-balance-live | dodać wydatek z podziałem i widzieć salda na żywo                | S-01          | US-01, FR-006, FR-007, FR-008, FR-009, FR-010                                                       | done     |
 | S-03 | settlement-lock             | zamknąć i otworzyć rozliczenie (twórca grupy)                    | S-02          | FR-015, FR-016                                                                                      | done     |
 | S-04 | expense-edit-delete         | edytować i usunąć swój własny wydatek                            | S-02          | FR-011, FR-012                                                                                      | proposed |
-| S-05 | user-profile-display-name   | zmienić swoją nazwę wyświetlaną i widzieć ją w całej aplikacji   | F-01, F-02    | US-02, FR-017, FR-018                                                                               | planned  |
+| S-05 | user-profile-display-name   | zmienić swoją nazwę wyświetlaną i widzieć ją w całej aplikacji   | F-01, F-02    | US-02, FR-017, FR-018                                                                               | done     |
 
 
 ## Streams
@@ -155,7 +155,7 @@ Fundacje poniżej zakładają, że wymienione elementy są obecne i NIE scaffold
   - Jaki jest maksymalny limit znaków dla nazwy wyświetlanej? Sugerowany domyślny: 50 znaków. — Owner: użytkownik. Block: tak (reguła walidacji FR-018 nie jest kompletna bez tej liczby).
   - Gdzie dokładnie pojawia się wpis nawigacyjny do strony profilu (np. link na dashboardzie vs. globalny element UI dostępny z każdej strony)? — Owner: użytkownik. Block: nie (implementacja może ruszyć z rozsądnym domyślnym).
 - **Risk:** Propagacja nazwy jest automatycznie retroaktywna — widoki grup ładują nazwy z tabeli `profiles` przy każdym żądaniu serwera, więc żadne backfill nie jest potrzebne. Brak real-time propagacji do otwartych zakładek innych uczestników jest celowy (PRD §Non-Goals); nowa nazwa widoczna dopiero przy następnym ładowaniu strony — akceptowalne ograniczenie MVP.
-- **Status:** planned
+- **Status:** done
 
 ## Backlog Handoff
 
@@ -168,14 +168,12 @@ Fundacje poniżej zakładają, że wymienione elementy są obecne i NIE scaffold
 | S-02       | expense-balance-live | [S-02] Dodawanie wydatku z podziałem + salda na żywo ⭐  | —                     | ✅ Done — 2f26ae0                |
 | S-03       | settlement-lock      | [S-03] Zamknięcie i otwarcie rozliczenia                | —                     | ✅ Done                          |
 | S-04       | expense-edit-delete         | [S-04] Edycja i usuwanie własnego wydatku                         | tak   | Nice-to-have; po S-03                                              |
-| S-05       | user-profile-display-name   | [S-05] Strona profilu — zmiana nazwy wyświetlanej                 | tak   | Plan reviewed — gotowe do `/10x-implement`                        |
+| S-05       | user-profile-display-name   | [S-05] Strona profilu — zmiana nazwy wyświetlanej                 | —     | ✅ Done — fc682e4                                                   |
 
 
 ## Open Roadmap Questions
 
 1. **Granularna kontrola dostępu do grupy** — jeden link zaproszenia obsługuje całą grupę; nie ma możliwości usunięcia konkretnego uczestnika bez usunięcia grupy. Owner: użytkownik. Block: nie (ograniczenie odnotowane w PRD FR-004; delegacja → v2). Dotyczy: roadmap-wide.
-2. **Maksymalna długość nazwy wyświetlanej** — reguła walidacji FR-018 wymaga tej liczby przed implementacją; sugerowany domyślny: 50 znaków. Owner: użytkownik. Block: S-05 (tak — reguła walidacji niekompletna bez tej decyzji).
-3. **Lokalizacja wpisu nawigacyjnego do strony profilu** — czy link do profilu pojawia się tylko na dashboardzie, czy jako globalny element UI dostępny z każdej strony? Owner: użytkownik. Block: nie (implementacja może ruszyć z rozsądnym domyślnym; wymagane potwierdzenie przed finalizacją UI). Dotyczy: S-05.
 
 ## Parked
 

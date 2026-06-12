@@ -44,3 +44,9 @@ export interface MemberBalance {
   total_paid: number;
   net_balance: number;
 }
+
+export interface UserProfile {
+  id: string;
+  email: string;
+  display_name: string | null;
+}
