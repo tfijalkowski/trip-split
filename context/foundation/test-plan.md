@@ -70,7 +70,7 @@ orchestrator updates Status as artifacts appear on disk.
 
 | # | Phase name | Goal (one line) | Risks covered | Test types | Status | Change folder |
 |---|------------|-----------------|---------------|------------|--------|---------------|
-| 1 | Critical-path safety net | Bootstrap test runner; prove balance correctness and RLS cross-group isolation at the cheapest layer | #5, #1 | unit + integration | researched | context/changes/testing-critical-path-safety-net/ |
+| 1 | Critical-path safety net | Bootstrap test runner; prove balance correctness and RLS cross-group isolation at the cheapest layer | #5, #1 | integration | planned | context/changes/testing-critical-path-safety-net/ |
 | 2 | API enforcement layer | Integration tests that lock bypass, ownership bypass, and invalid input all fail at the server boundary | #2, #4, #6 | integration | not started | — |
 | 3 | Realtime + critical e2e | Two-session Playwright test proves live balance update; invite-link join on a locked group is exercised | #3, subset of #2 | e2e | not started | — |
 | 4 | Quality-gates wiring | Typecheck, lint, unit+integration, and critical e2e are all enforced in CI; no gate is optional | cross-cutting | CI config | not started | — |
