@@ -70,7 +70,7 @@ orchestrator updates Status as artifacts appear on disk.
 
 | # | Phase name | Goal (one line) | Risks covered | Test types | Status | Change folder |
 |---|------------|-----------------|---------------|------------|--------|---------------|
-| 1 | Critical-path safety net | Bootstrap test runner; prove balance correctness and RLS cross-group isolation at the cheapest layer | #5, #1 | integration | planned | context/changes/testing-critical-path-safety-net/ |
+| 1 | Critical-path safety net | Bootstrap test runner; prove balance correctness and RLS cross-group isolation at the cheapest layer | #5, #1 | integration | complete | context/changes/testing-critical-path-safety-net/ |
 | 2 | API enforcement layer | Integration tests that lock bypass, ownership bypass, and invalid input all fail at the server boundary | #2, #4, #6 | integration | not started | — |
 | 3 | Realtime + critical e2e | Two-session Playwright test proves live balance update; invite-link join on a locked group is exercised | #3, subset of #2 | e2e | not started | — |
 | 4 | Quality-gates wiring | Typecheck, lint, unit+integration, and critical e2e are all enforced in CI; no gate is optional | cross-cutting | CI config | not started | — |
@@ -123,13 +123,48 @@ phase lands; before that, the gate is planned but not enforced.
 How to add new tests in this project. Each sub-section is filled in once
 the relevant rollout phase ships.
 
-### 6.1 Adding a unit test (balance calculation)
+### 6.1 Adding a balance integration test
 
-TBD — see §3 Phase 1 for balance-correctness pattern (zero-sum invariant, custom split scenarios).
+**Shipped in**: `context/changes/testing-critical-path-safety-net/` (commits `2bd6a6a`, `801c1ce`)
 
-### 6.2 Adding an integration test (RLS + API endpoint)
+**File**: `src/__tests__/balance.test.ts`
 
-TBD — see §3 Phase 1 (RLS non-member isolation) and Phase 2 (lock bypass, ownership, input validation) for the Supabase local + authenticated-user pattern.
+**Key rule — no unit tests for balance**: the calculation lives entirely in the `member_balances` SQL VIEW. There is no JS/TS function to unit-test. Integration against Supabase local is the only valid layer.
+
+**Oracle formula** (from `supabase/migrations/20260610182008_expense_balance_layer.sql`):
+```
+net_balance = total_paid − total_owed
+           = SUM(expenses.amount WHERE paid_by = user) − SUM(expense_participants.amount_owed WHERE user_id = user)
+```
+Derive expected values from this formula **before** writing assertions. Never query the VIEW first and use its output as the expected value — that is the mirror-test anti-pattern.
+
+**Two-client setup**:
+- `supabaseAdmin` — initialized with `SUPABASE_SERVICE_ROLE_KEY` (the `sb_secret_*` key from `supabase status`). Used only for user and group lifecycle (create, delete). Never for assertions.
+- `supabaseAsAlice` — initialized with `SUPABASE_ANON_KEY` + `Authorization: Bearer <alice_jwt>`. Used for all RLS-scoped queries and `create_expense` RPC calls.
+
+**Expense insertion**: call `supabaseAsUser.rpc('create_expense', { p_group_id, p_description, p_amount, p_paid_by, p_participants: [{ user_id, amount_owed }] })`. The RPC is `SECURITY DEFINER` so it bypasses RLS for the INSERT, but it requires an authenticated user JWT.
+
+**Run**: `npm test` or `npm run test:coverage`.
+
+**Rounding rule** (from `src/components/expenses/AddExpenseSheet.tsx:73–80`): equal split uses floor division; remainder goes to the first participant (`i === 0 ? floor + remainder : floor`).
+
+### 6.2 Adding an RLS isolation integration test
+
+**Shipped in**: `context/changes/testing-critical-path-safety-net/` (commit `52d7f55`)
+
+**File**: `src/__tests__/rls-isolation.test.ts`
+
+**Dynamic user lifecycle**: create test users in `beforeAll` via `supabaseAdmin.auth.admin.createUser({ email, password, email_confirm: true })`; delete them in `afterAll` via `supabaseAdmin.auth.admin.deleteUser(id)`. Never rely on seed users — seeds are global state, tests need isolation.
+
+**Two-client pattern** (same as §6.1):
+- `supabaseAdmin` — service_role lifecycle only.
+- `supabaseAsUser` — anon key + `global: { headers: { Authorization: 'Bearer <jwt>' } }`. Obtain the JWT via `client.auth.signInWithPassword()` in `beforeAll`. This client runs as the specific user; all PostgREST queries use their JWT for `auth.uid()` and their role for RLS evaluation.
+
+**Superuser anti-pattern**: never assert RLS with the admin client. The service_role key bypasses RLS; queries always return all rows. An admin-based isolation test always passes, even when the policy is broken.
+
+**`member_balances` VIEW note**: requires `security_invoker = true` (migration `20260614130000_member_balances_security_invoker.sql`). Without it, the VIEW runs as its postgres owner (superuser, BYPASSRLS) and leaks all rows to non-members. Any new VIEW that surfaces financial data must explicitly set `WITH (security_invoker = true)`.
+
+**Load-bearing positive path**: always include one assertion that proves the group setup is valid — e.g., "member sees the expense". Without this, a broken `beforeAll` (zero expenses inserted) makes all zero-row assertions vacuously pass.
 
 ### 6.3 Adding an e2e test (Playwright)
 

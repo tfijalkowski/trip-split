@@ -382,21 +382,21 @@ Replace the `TBD` placeholders in `§6.1` and `§6.2` of `context/foundation/tes
 
 #### Automated
 
-- [x] 3.1 `npm test` runs rls-isolation.test.ts; all 4 it blocks pass
-- [x] 3.2 testCharlie does not exist in admin user list after test run
+- [x] 3.1 `npm test` runs rls-isolation.test.ts; all 4 it blocks pass — 52d7f55
+- [x] 3.2 testCharlie does not exist in admin user list after test run — 52d7f55
 
 #### Manual
 
-- [x] 3.3 `supabase stop` then `npm test` produces a clear connection error, not silent pass
-- [x] 3.4 No leftover test groups or users in Supabase Studio after test run
+- [x] 3.3 `supabase stop` then `npm test` produces a clear connection error, not silent pass — 52d7f55
+- [x] 3.4 No leftover test groups or users in Supabase Studio after test run — 52d7f55
 
 ### Phase 4: Cookbook Update
 
 #### Automated
 
-- [ ] 4.1 `npm test` still passes after cookbook edits
+- [x] 4.1 `npm test` still passes after cookbook edits
 
 #### Manual
 
-- [ ] 4.2 §6.1 and §6.2 in test-plan.md filled in; no TBD remains
-- [ ] 4.3 Phase 1 row in §3 shows complete
+- [x] 4.2 §6.1 and §6.2 in test-plan.md filled in; no TBD remains
+- [x] 4.3 Phase 1 row in §3 shows complete
