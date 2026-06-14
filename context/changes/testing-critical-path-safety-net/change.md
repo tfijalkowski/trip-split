@@ -1,7 +1,7 @@
 ---
 change_id: testing-critical-path-safety-net
 title: Testing critical path safety net
-status: planned
+status: implementing
 created: 2026-06-13
 updated: 2026-06-14
 archived_at: null

@@ -357,14 +357,14 @@ Replace the `TBD` placeholders in `§6.1` and `§6.2` of `context/foundation/tes
 
 #### Automated
 
-- [ ] 1.1 `npm test` exits cleanly with 0 tests found
-- [ ] 1.2 `npm run test:coverage` exits cleanly and produces coverage/ directory
-- [ ] 1.3 `astro check` / `npx tsc --noEmit` passes with updated tsconfig
+- [x] 1.1 `npm test` exits cleanly with 0 tests found
+- [x] 1.2 `npm run test:coverage` exits cleanly and produces coverage/ directory
+- [x] 1.3 `astro check` / `npx tsc --noEmit` passes with updated tsconfig
 
 #### Manual
 
-- [ ] 1.4 .env.test is listed in .gitignore and not in git status
-- [ ] 1.5 vitest.config.ts resolves @/ to src/ without import errors in editor
+- [x] 1.4 .env.test is listed in .gitignore and not in git status
+- [x] 1.5 vitest.config.ts resolves @/ to src/ without import errors in editor
 
 ### Phase 2: Balance Correctness Tests (Risk #5)
 
