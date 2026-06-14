@@ -370,25 +370,25 @@ Replace the `TBD` placeholders in `§6.1` and `§6.2` of `context/foundation/tes
 
 #### Automated
 
-- [x] 2.1 `npm test` finds and runs balance.test.ts; all 3 it blocks pass
-- [x] 2.2 TypeScript in balance.test.ts compiles without errors
+- [x] 2.1 `npm test` finds and runs balance.test.ts; all 3 it blocks pass — 801c1ce
+- [x] 2.2 TypeScript in balance.test.ts compiles without errors — 801c1ce
 
 #### Manual
 
-- [x] 2.3 Test output names all 3 scenarios with descriptive labels
-- [x] 2.4 No orphaned rows in expenses or group_members after test run
+- [x] 2.3 Test output names all 3 scenarios with descriptive labels — 801c1ce
+- [x] 2.4 No orphaned rows in expenses or group_members after test run — 801c1ce
 
 ### Phase 3: RLS Isolation Tests (Risk #1)
 
 #### Automated
 
-- [ ] 3.1 `npm test` runs rls-isolation.test.ts; all 4 it blocks pass
-- [ ] 3.2 testCharlie does not exist in admin user list after test run
+- [x] 3.1 `npm test` runs rls-isolation.test.ts; all 4 it blocks pass
+- [x] 3.2 testCharlie does not exist in admin user list after test run
 
 #### Manual
 
-- [ ] 3.3 `supabase stop` then `npm test` produces a clear connection error, not silent pass
-- [ ] 3.4 No leftover test groups or users in Supabase Studio after test run
+- [x] 3.3 `supabase stop` then `npm test` produces a clear connection error, not silent pass
+- [x] 3.4 No leftover test groups or users in Supabase Studio after test run
 
 ### Phase 4: Cookbook Update
 
