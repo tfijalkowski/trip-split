@@ -394,9 +394,9 @@ Replace the `TBD` placeholders in `§6.1` and `§6.2` of `context/foundation/tes
 
 #### Automated
 
-- [x] 4.1 `npm test` still passes after cookbook edits
+- [x] 4.1 `npm test` still passes after cookbook edits — c217539
 
 #### Manual
 
-- [x] 4.2 §6.1 and §6.2 in test-plan.md filled in; no TBD remains
-- [x] 4.3 Phase 1 row in §3 shows complete
+- [x] 4.2 §6.1 and §6.2 in test-plan.md filled in; no TBD remains — c217539
+- [x] 4.3 Phase 1 row in §3 shows complete — c217539
