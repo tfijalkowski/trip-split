@@ -357,26 +357,26 @@ Replace the `TBD` placeholders in `§6.1` and `§6.2` of `context/foundation/tes
 
 #### Automated
 
-- [x] 1.1 `npm test` exits cleanly with 0 tests found
-- [x] 1.2 `npm run test:coverage` exits cleanly and produces coverage/ directory
-- [x] 1.3 `astro check` / `npx tsc --noEmit` passes with updated tsconfig
+- [x] 1.1 `npm test` exits cleanly with 0 tests found — 2bd6a6a
+- [x] 1.2 `npm run test:coverage` exits cleanly and produces coverage/ directory — 2bd6a6a
+- [x] 1.3 `astro check` / `npx tsc --noEmit` passes with updated tsconfig — 2bd6a6a
 
 #### Manual
 
-- [x] 1.4 .env.test is listed in .gitignore and not in git status
-- [x] 1.5 vitest.config.ts resolves @/ to src/ without import errors in editor
+- [x] 1.4 .env.test is listed in .gitignore and not in git status — 2bd6a6a
+- [x] 1.5 vitest.config.ts resolves @/ to src/ without import errors in editor — 2bd6a6a
 
 ### Phase 2: Balance Correctness Tests (Risk #5)
 
 #### Automated
 
-- [ ] 2.1 `npm test` finds and runs balance.test.ts; all 3 it blocks pass
-- [ ] 2.2 TypeScript in balance.test.ts compiles without errors
+- [x] 2.1 `npm test` finds and runs balance.test.ts; all 3 it blocks pass
+- [x] 2.2 TypeScript in balance.test.ts compiles without errors
 
 #### Manual
 
-- [ ] 2.3 Test output names all 3 scenarios with descriptive labels
-- [ ] 2.4 No orphaned rows in expenses or group_members after test run
+- [x] 2.3 Test output names all 3 scenarios with descriptive labels
+- [x] 2.4 No orphaned rows in expenses or group_members after test run
 
 ### Phase 3: RLS Isolation Tests (Risk #1)
 
