@@ -64,9 +64,7 @@ describe("expenses + member_balances — non-member isolation", () => {
     if (groupError || !group) throw new Error(`group insert failed: ${groupError?.message}`);
     groupId = group.id as string;
 
-    const { error: memberError } = await admin
-      .from("group_members")
-      .insert({ group_id: groupId, user_id: aliceId });
+    const { error: memberError } = await admin.from("group_members").insert({ group_id: groupId, user_id: aliceId });
     if (memberError) throw new Error(`group_members insert failed: ${memberError?.message}`);
 
     // Insert one expense as Alice (1 000 grosze, Alice owes 1 000)
@@ -89,37 +87,25 @@ describe("expenses + member_balances — non-member isolation", () => {
   });
 
   it("non-member sees 0 rows in expenses", async () => {
-    const { data, error } = await supabaseAsCharlie
-      .from("expenses")
-      .select("*")
-      .eq("group_id", groupId);
+    const { data, error } = await supabaseAsCharlie.from("expenses").select("*").eq("group_id", groupId);
     expect(error).toBeNull();
     expect(data).toHaveLength(0);
   });
 
   it("non-member sees 0 rows in member_balances", async () => {
-    const { data, error } = await supabaseAsCharlie
-      .from("member_balances")
-      .select("*")
-      .eq("group_id", groupId);
+    const { data, error } = await supabaseAsCharlie.from("member_balances").select("*").eq("group_id", groupId);
     expect(error).toBeNull();
     expect(data).toHaveLength(0);
   });
 
   it("non-member sees 0 rows in groups table", async () => {
-    const { data, error } = await supabaseAsCharlie
-      .from("groups")
-      .select("*")
-      .eq("id", groupId);
+    const { data, error } = await supabaseAsCharlie.from("groups").select("*").eq("id", groupId);
     expect(error).toBeNull();
     expect(data).toHaveLength(0);
   });
 
   it("member (Alice) sees the expense — proves group setup is valid, not vacuously empty", async () => {
-    const { data, error } = await supabaseAsAlice
-      .from("expenses")
-      .select("*")
-      .eq("group_id", groupId);
+    const { data, error } = await supabaseAsAlice.from("expenses").select("*").eq("group_id", groupId);
     expect(error).toBeNull();
     expect(data).toHaveLength(1);
   });

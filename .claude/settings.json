@@ -25,5 +25,28 @@
       "deny": [
         "Bash(rm -rf *)"
       ]
+    },
+    "hooks": {
+      "PostToolUse": [
+        {
+          "matcher": "Edit|Write",
+          "hooks": [
+            {
+              "type": "command",
+              "command": "FILE=$(jq -r .tool_input.file_path); npx eslint --fix \"$FILE\" --quiet 2>&1; code=$?; [ $code -eq 0 ] && exit 0 || exit 2",
+              "timeout": 10000
+            },
+            {
+              "type": "command",
+              "command": "npx tsc --noEmit"
+            },
+            {
+              "type": "command",
+              "command": "AI_AGENT=1 bash -c 'FILE=$(jq -r .tool_input.file_path) && npx vitest related \"$FILE\" --run; RC=$?; exit $([[ $RC -ne 0 ]] && echo 2 || echo 0)'",
+              "timeout": 30000
+            }
+          ]
+        }
+      ]
     }
   }

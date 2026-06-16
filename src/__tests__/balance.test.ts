@@ -32,11 +32,7 @@ async function createTestUser(admin: ReturnType<typeof makeAdmin>, email: string
   return data.user.id;
 }
 
-async function createGroupWithMembers(
-  admin: ReturnType<typeof makeAdmin>,
-  createdBy: string,
-  memberIds: string[]
-) {
+async function createGroupWithMembers(admin: ReturnType<typeof makeAdmin>, createdBy: string, memberIds: string[]) {
   const { data: group, error: groupError } = await admin
     .from("groups")
     .insert({ name: "test-group", created_by: createdBy })
@@ -52,11 +48,7 @@ async function createGroupWithMembers(
   return group.id as string;
 }
 
-async function deleteGroupAndUsers(
-  admin: ReturnType<typeof makeAdmin>,
-  groupId: string,
-  userIds: string[]
-) {
+async function deleteGroupAndUsers(admin: ReturnType<typeof makeAdmin>, groupId: string, userIds: string[]) {
   await admin.from("groups").delete().eq("id", groupId);
   for (const id of userIds) {
     await admin.auth.admin.deleteUser(id);
